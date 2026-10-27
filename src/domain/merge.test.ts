@@ -60,7 +60,11 @@ describe('mergeRecords', () => {
 
 describe('parseBackup', () => {
   const file = (over: object = {}) =>
-    JSON.stringify({ format: 'pousse-backup', version: 1, exportedAt: '', expenses: [base], categories: [], ...over });
+    JSON.stringify({ format: 'financialapp-backup', version: 1, exportedAt: '', expenses: [base], categories: [], ...over });
+
+  it('accepte encore les exports de l\'ancien nom de l\'app', () => {
+    expect(parseBackup(file({ format: 'pousse-backup' })).expenses).toHaveLength(1);
+  });
 
   it('lit un export valide', () => {
     const r = parseBackup(file({ rates: { USD: 0.9, XXX1: 2 } }));

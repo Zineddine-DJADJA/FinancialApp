@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Pousse"
+    "name": "FinancialApp"
   },
   "tabs": {
     "label": "Main navigation",
@@ -128,7 +128,7 @@
     "importRejected": "{{count}} invalid line(s) skipped.",
     "importErrors": {
       "invalid-json": "This file can't be read.",
-      "not-a-backup": "This file isn't a Pousse export.",
+      "not-a-backup": "This file isn't a FinancialApp export.",
       "unsupported-version": "This export comes from a newer version of the app. Update it first.",
       "generic": "Import failed. Your data wasn't changed."
     },

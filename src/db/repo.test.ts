@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { PousseDB } from './db';
+import { AppDB } from './db';
 import {
   ProfileLockedError,
   buildBackup,
@@ -13,14 +13,14 @@ import {
 
 /** Scénario de bout en bout : le téléphone de Zizou et celui de Zuzu échangent leurs exports. */
 
-let zizou: PousseDB;
-let zuzu: PousseDB;
+let zizou: AppDB;
+let zuzu: AppDB;
 let n = 0;
 
 beforeEach(async () => {
   n++;
-  zizou = new PousseDB(`zizou-${n}`);
-  zuzu = new PousseDB(`zuzu-${n}`);
+  zizou = new AppDB(`zizou-${n}`);
+  zuzu = new AppDB(`zuzu-${n}`);
   await Promise.all([zizou.open(), zuzu.open()]);
   await updateSettings({ profile: 'zizou' }, zizou);
   await updateSettings({ profile: 'zuzu' }, zuzu);
@@ -37,10 +37,10 @@ const draft = (amountMinor: number, categoryId = 'food') => ({
   date: '2026-10-27',
 });
 
-const live = async (database: PousseDB) =>
+const live = async (database: AppDB) =>
   (await database.expenses.toArray()).filter((e) => !e.deletedAt).map((e) => e.amountMinor).sort();
 
-const exportOf = async (database: PousseDB) => JSON.stringify(await buildBackup(database));
+const exportOf = async (database: AppDB) => JSON.stringify(await buildBackup(database));
 
 describe('échange entre deux téléphones', () => {
   it('fusionne sans doublons, même après plusieurs imports', async () => {

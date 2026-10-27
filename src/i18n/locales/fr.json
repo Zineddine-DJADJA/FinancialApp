@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Pousse"
+    "name": "FinancialApp"
   },
   "tabs": {
     "label": "Navigation principale",
@@ -128,7 +128,7 @@
     "importRejected": "{{count}} ligne(s) invalide(s) ignorée(s).",
     "importErrors": {
       "invalid-json": "Ce fichier n'est pas lisible.",
-      "not-a-backup": "Ce fichier n'est pas un export Pousse.",
+      "not-a-backup": "Ce fichier n'est pas un export FinancialApp.",
       "unsupported-version": "Cet export vient d'une version plus récente de l'app. Mets-la à jour d'abord.",
       "generic": "L'import a échoué. Tes données n'ont pas été modifiées."
     },

@@ -1,5 +1,5 @@
 import { isValidCurrency } from './money';
-import { isProfileId, type Backup, type Category, type CurrencyCode, type Expense } from './types';
+import { BACKUP_FORMAT, LEGACY_BACKUP_FORMATS, isProfileId, type Backup, type Category, type CurrencyCode, type Expense } from './types';
 
 /**
  * Fusion des données lors d'un import.
@@ -130,7 +130,8 @@ export function parseBackup(text: string): ParsedBackup {
     throw new BackupError('invalid-json');
   }
   const b = data as Partial<Backup> | null;
-  if (!b || b.format !== 'pousse-backup' || !Array.isArray(b.expenses)) {
+  const knownFormat = b?.format === BACKUP_FORMAT || LEGACY_BACKUP_FORMATS.includes(String(b?.format));
+  if (!b || !knownFormat || !Array.isArray(b.expenses)) {
     throw new BackupError('not-a-backup');
   }
   if (b.version !== 1) throw new BackupError('unsupported-version');

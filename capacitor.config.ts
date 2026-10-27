@@ -2,8 +2,8 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 // Configuration de l'APK Android (voir README, section « Générer l'APK »).
 const config: CapacitorConfig = {
-  appId: 'app.pousse.depenses',
-  appName: 'Pousse',
+  appId: 'com.financialapp.app',
+  appName: 'FinancialApp',
   webDir: 'dist',
   backgroundColor: '#FFFFFF',
   android: {

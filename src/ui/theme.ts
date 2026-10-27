@@ -7,6 +7,7 @@ import type { ContrastPref, ThemePref } from '../domain/types';
  * Le dernier choix est mémorisé localement pour éviter un flash au démarrage.
  */
 
+// Préfixe « pousse. » (ancien nom de l'app) conservé pour garder les préférences déjà enregistrées.
 const STORAGE_KEY = 'pousse.appearance';
 
 function toCss(t: ThemeTokens): string {

@@ -51,11 +51,11 @@ async function shareFile(content: string, filename: string, mime: string): Promi
 /** Sauvegarde complète (JSON), réimportable et fusionnable. */
 export async function exportBackup(): Promise<ShareResult> {
   const json = JSON.stringify(await buildBackup(), null, 2);
-  return shareFile(json, `pousse-${todayISO()}.json`, 'application/json');
+  return shareFile(json, `financialapp-${todayISO()}.json`, 'application/json');
 }
 
 /** Tableau des dépenses (CSV) pour Excel, Numbers ou Google Sheets. Non réimportable. */
 export async function exportCsv(options: CsvOptions): Promise<ShareResult> {
   const csv = expensesToCsv(await db.expenses.toArray(), options);
-  return shareFile(csv, `pousse-${todayISO()}.csv`, 'text/csv');
+  return shareFile(csv, `financialapp-${todayISO()}.csv`, 'text/csv');
 }

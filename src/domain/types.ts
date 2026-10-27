@@ -87,9 +87,13 @@ export function canEdit(expense: Pick<Expense, 'profile'>, me: ProfileId | undef
   return !expense.profile || expense.profile === me;
 }
 
+/** Identifiant du format d'export ; « pousse-backup » (ancien nom de l'app) reste accepté à l'import. */
+export const BACKUP_FORMAT = 'financialapp-backup';
+export const LEGACY_BACKUP_FORMATS = ['pousse-backup'];
+
 /** Format du fichier d'export / sauvegarde. */
 export interface Backup {
-  format: 'pousse-backup';
+  format: typeof BACKUP_FORMAT;
   version: 1;
   exportedAt: string;
   expenses: Expense[];

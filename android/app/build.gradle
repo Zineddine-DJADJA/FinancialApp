@@ -9,10 +9,10 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "app.pousse.depenses"
+    namespace = "com.financialapp.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "app.pousse.depenses"
+        applicationId "com.financialapp.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

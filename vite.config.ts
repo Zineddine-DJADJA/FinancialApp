@@ -19,8 +19,8 @@ export default defineConfig({
       injectRegister: false,
       includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'logo.svg'],
       manifest: {
-        name: 'Pousse — dépenses',
-        short_name: 'Pousse',
+        name: 'FinancialApp — dépenses',
+        short_name: 'FinancialApp',
         description: 'Suivi des dépenses du quotidien, hors ligne.',
         lang: 'fr',
         start_url: './',

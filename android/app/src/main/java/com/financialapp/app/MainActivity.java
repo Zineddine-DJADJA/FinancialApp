@@ -1,4 +1,4 @@
-package app.pousse.depenses;
+package com.financialapp.app;
 
 import com.getcapacitor.BridgeActivity;
 

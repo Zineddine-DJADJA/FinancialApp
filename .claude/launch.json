@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "pousse-dev",
+      "name": "financialapp-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "run",
@@ -15,7 +15,7 @@
       "port": 5173
     },
     {
-      "name": "pousse-preview",
+      "name": "financialapp-preview",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "run",

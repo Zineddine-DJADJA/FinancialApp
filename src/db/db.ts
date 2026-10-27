@@ -5,11 +5,12 @@ import { FALLBACK_CATEGORY_ID, type Category, type Expense, type Settings } from
  * Base IndexedDB locale (via Dexie). Aucune donnée ne quitte l'appareil,
  * sauf via l'export manuel.
  */
-export class PousseDB extends Dexie {
+export class AppDB extends Dexie {
   expenses!: EntityTable<Expense, 'id'>;
   categories!: EntityTable<Category, 'id'>;
   settings!: EntityTable<Settings, 'id'>;
 
+  // Nom de base historique, conservé pour ne pas perdre les données déjà saisies.
   constructor(name = 'pousse') {
     super(name);
     this.version(1).stores({
@@ -47,7 +48,7 @@ export function defaultSettings(): Settings {
   };
 }
 
-export const db = new PousseDB();
+export const db = new AppDB();
 
 /** Demande au navigateur de ne pas effacer les données en cas de manque d'espace. */
 export function requestPersistentStorage(): void {

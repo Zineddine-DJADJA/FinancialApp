@@ -1,6 +1,6 @@
-# Pousse : suivi des dépenses à deux
+# FinancialApp : suivi des dépenses à deux
 
-Pousse est une petite application pour noter les dépenses du quotidien, pensée pour deux personnes.
+FinancialApp est une petite application pour noter les dépenses du quotidien, pensée pour deux personnes.
 
 - **100 % hors ligne** : les données restent sur le téléphone, sans compte ni serveur.
 - **Gratuite à distribuer** : sur iPhone, elle s'installe comme une application web (PWA) ; sur Android, en PWA ou en APK.
@@ -92,12 +92,12 @@ Aucun compte Apple Developer ni App Store n'est nécessaire.
 1. Ouvre l'adresse GitHub Pages dans **Safari**. Ça doit être Safari : les autres navigateurs iOS ne proposent pas toujours l'option.
 2. Touche le bouton **Partager**, le carré avec une flèche vers le haut.
 3. Fais défiler et choisis **« Sur l'écran d'accueil »**, puis **Ajouter**.
-4. Lance Pousse depuis l'icône : elle s'ouvre en plein écran, sans barre Safari, et fonctionne ensuite sans réseau.
+4. Lance FinancialApp depuis l'icône : elle s'ouvre en plein écran, sans barre Safari, et fonctionne ensuite sans réseau.
 
 Ce qui est prévu pour l'iPhone :
 
 - `viewport-fit=cover` et marges de sécurité (`env(safe-area-inset-*)`) : rien n'est caché par l'encoche, la Dynamic Island ou la barre d'accueil.
-- Icône Apple dédiée (`apple-touch-icon-180x180.png`), titre « Pousse » sous l'icône, barre d'état assortie au thème.
+- Icône Apple dédiée (`apple-touch-icon-180x180.png`), titre « FinancialApp » sous l'icône, barre d'état assortie au thème.
 - Pavé numérique intégré pour le montant : le clavier iOS ne recouvre pas la moitié de l'écran, et le zoom automatique de Safari est évité (champs en 17 px).
 - Le bouton « Exporter » ouvre la feuille de partage iOS : **Enregistrer dans Fichiers**, AirDrop, Messages…
 
@@ -152,7 +152,7 @@ Pourquoi signer avec ta propre clé : Android n'accepte une **mise à jour** de 
 1. **Crée la clé.** `keytool` est fourni avec le JDK d'Android Studio. Lance la commande depuis le dossier `android/` :
 
    ```bash
-   keytool -genkeypair -v -keystore pousse-release.jks -alias pousse -keyalg RSA -keysize 2048 -validity 10000
+   keytool -genkeypair -v -keystore financialapp-release.jks -alias financialapp -keyalg RSA -keysize 2048 -validity 10000
    ```
 
    L'outil demande un mot de passe et quelques informations (nom…). Elles restent locales.
@@ -160,9 +160,9 @@ Pourquoi signer avec ta propre clé : Android n'accepte une **mise à jour** de 
 2. **Crée le fichier `android/keystore.properties`.** Il n'est jamais commité : il est listé dans `.gitignore`.
 
    ```properties
-   storeFile=pousse-release.jks
+   storeFile=financialapp-release.jks
    storePassword=ton-mot-de-passe
-   keyAlias=pousse
+   keyAlias=financialapp
    keyPassword=ton-mot-de-passe
    ```
 
@@ -174,7 +174,7 @@ Pourquoi signer avec ta propre clé : Android n'accepte une **mise à jour** de 
 
    Résultat : `android/app/build/outputs/apk/release/app-release.apk`.
 
-4. **Sauvegarde** `pousse-release.jks` et ses mots de passe hors de l'ordinateur, par exemple dans un gestionnaire de mots de passe. Sans eux, plus aucune mise à jour n'est possible sans perdre les données.
+4. **Sauvegarde** `financialapp-release.jks` et ses mots de passe hors de l'ordinateur, par exemple dans un gestionnaire de mots de passe. Sans eux, plus aucune mise à jour n'est possible sans perdre les données.
 
 **Pour une nouvelle version** : augmente `versionCode` (1, 2, 3…) et `versionName` dans [android/app/build.gradle](android/app/build.gradle), puis relance les étapes 5.2 et 5.4.
 
@@ -190,7 +190,7 @@ Avec le téléphone branché et le débogage USB activé, une seule commande suf
 
 Chaque téléphone a ses propres données. Pour les réunir :
 
-1. Sur le téléphone A : **Réglages → Exporter**. Envoie le fichier `pousse-AAAA-MM-JJ.json` à B (Messages, WhatsApp, AirDrop…).
+1. Sur le téléphone A : **Réglages → Exporter**. Envoie le fichier `financialapp-AAAA-MM-JJ.json` à B (Messages, WhatsApp, AirDrop…).
 2. Sur le téléphone B : **Réglages → Importer et fusionner**, puis choisis le fichier.
 3. Fais la même chose dans l'autre sens pour que les deux téléphones aient tout.
 
