@@ -205,7 +205,7 @@ L'export contient **tout**. C'est aussi ta sauvegarde : garde le dernier quelque
 ## 7. Lisibilité en toute lumière
 
 - **Plein soleil** : Réglages → Contraste → **Élevé**. Encre presque noire, contours de 2 px, textes secondaires assombris. Il s'active aussi automatiquement si le réglage « Augmenter le contraste » du téléphone est activé.
-- **Dans le noir** : le thème sombre (automatique ou forcé) est vert presque noir, avec un texte crème plutôt que blanc pur pour éviter l'éblouissement. Il existe aussi un sombre à contraste élevé.
+- **Dans le noir** : le thème sombre (automatique ou forcé) reprend le fond noir de la charte avec des aplats vert profond, et un texte légèrement adouci plutôt que blanc pur pour éviter l'éblouissement. Il existe aussi un sombre à contraste élevé.
 - **Contrastes vérifiés automatiquement** ([src/ui/tokens.test.ts](src/ui/tokens.test.ts)) dans les 4 thèmes :
   - texte principal ≥ 7:1 (niveau AAA) ;
   - texte secondaire ≥ 4,5:1 (≥ 7:1 en contraste élevé) ;
@@ -239,11 +239,11 @@ android/       Projet Android généré par Capacitor
 - **React + TypeScript + Vite**, **vite-plugin-pwa** pour le service worker et le manifest, **Dexie** pour IndexedDB, **i18next** pour les langues : comme proposé au départ.
 - **Graphiques en SVG maison avec `d3-shape`**, plutôt que Recharts :
   - il n'y a que 3 graphiques simples ;
-  - le style du design system (contours encre, pilules, rebords) est maîtrisé à 100 % ;
+  - le style du design system (fond blanc, aplats vert tendre, pilules noires, contours fins) est maîtrisé à 100 % ;
   - les couleurs suivent les variables CSS du thème, contraste élevé compris ;
   - l'app est plus légère d'environ 90 Ko.
 - **`motion`** pour les animations à ressort (panneau qu'on fait glisser, glisser pour supprimer), en suivant les principes d'Apple : réponse immédiate à l'appui, gestes interruptibles, élan conservé.
-- **Polices embarquées** (Outfit pour les chiffres, Pixelify Sans pour les titres) : disponibles hors ligne.
+- **Polices embarquées** (Outfit pour les chiffres, Silkscreen, police pixel, pour les titres) : disponibles hors ligne.
 
 **Comparaison des périodes** : pour une période en cours, on compare « à date ». Par exemple, du 1er au 27 octobre contre du 1er au 27 septembre, ce qui est plus juste qu'un mois entier contre un mois commencé. La comparaison est bornée à la fin d'un mois plus court (31 mars contre 28 février). Une période terminée est comparée en entier.
 

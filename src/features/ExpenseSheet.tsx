@@ -103,7 +103,7 @@ export function ExpenseSheet({ open, editing, onClose }: { open: boolean; editin
   return (
     <Sheet open={open} onClose={onClose} title={t(editing ? 'form.editTitle' : 'form.newTitle')}>
       {/* Montant */}
-      <div className="amount-display" aria-live="polite">
+      <div className="amount-panel" aria-live="polite">
         <span className="sr-only">{t('form.amount')}</span>
         <span className="amount-display__value num">{shownAmount}</span>
         <label className="sr-only" htmlFor="currency">{t('form.currency')}</label>

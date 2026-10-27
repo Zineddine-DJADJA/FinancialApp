@@ -12,18 +12,19 @@ describe.each(Object.entries(themes))('thème %s', (name, t) => {
 
   it.each([
     ['texte principal / fond', t.ink, t.bg, 7],
-    ['texte principal / carte', t.ink, t.surface, 7],
+    ['texte principal / ligne', t.ink, t.surface, 7],
+    ['texte principal / aplat vert', t.ink, t.panel, 7],
     ['texte secondaire / fond', t.text2, t.bg, textMin],
-    ['texte secondaire / carte', t.text2, t.surface, textMin],
+    ['texte secondaire / ligne', t.text2, t.surface, textMin],
+    ['texte secondaire / aplat vert', t.text2, t.panel, textMin],
     ['hausse / fond', t.up, t.bg, textMin],
-    ['hausse / carte', t.up, t.surface, textMin],
+    ['hausse / aplat vert', t.up, t.panel, textMin],
     ['baisse / fond', t.down, t.bg, textMin],
-    ['baisse / carte', t.down, t.surface, textMin],
+    ['baisse / aplat vert', t.down, t.panel, textMin],
     ['bouton principal', t.onPrimary, t.primary, 7],
     ['sélection', t.onAccent, t.accent, 7],
-    ['navigation', t.onNav, t.nav, textMin],
     ['contours / fond', t.line, t.bg, 3],
-    ['contours / carte', t.line, t.surface, 3],
+    ['contours / ligne', t.line, t.surface, 3],
     ['bouton principal / fond', t.primary, t.bg, 3],
   ] as const)('%s ≥ %s', (_label, fg, bg, min) => {
     expect(contrastRatio(fg, bg)).toBeGreaterThanOrEqual(min);

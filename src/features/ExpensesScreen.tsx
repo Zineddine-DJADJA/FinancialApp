@@ -7,7 +7,7 @@ import { convertMinor } from '../domain/currency';
 import { periodContaining, todayISO } from '../domain/periods';
 import type { Expense } from '../domain/types';
 import { deleteExpense, restoreExpense } from '../db/repo';
-import { Button, Card, CategoryIcon, SPRING, haptic, useToast } from '../ui/components';
+import { Button, Card, CategoryIcon, SPRING, ScreenHeader, haptic, useToast } from '../ui/components';
 import { categoryName, useCategories, useFormat, useSettings, type CategoryIndex } from '../state';
 import { ComparisonLine } from './Comparison';
 
@@ -56,11 +56,9 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
 
   return (
     <div className="screen">
-      <header className="screen__head">
-        <h1 className="screen__title pixel">{t('expenses.title')}</h1>
-      </header>
+      <ScreenHeader title={t('expenses.title')} subtitle={f.date(today, { month: 'long' })} />
 
-      <Card className="card-pad">
+      <Card panel className="card-pad">
         <p className="small muted strong" style={{ margin: 0 }}>
           {t('expenses.monthTotal', { month: f.periodLabel(month) })}
         </p>
@@ -139,7 +137,6 @@ function ExpenseRow({
       <motion.button
         type="button"
         className="card expense-row"
-        style={{ '--card-ledge': category.color } as React.CSSProperties}
         onClick={onOpen}
         aria-label={`${name}, ${f.money(expense.amountMinor, expense.currency)}${expense.note ? `, ${expense.note}` : ''}`}
         aria-description={t('expenses.swipeHint')}

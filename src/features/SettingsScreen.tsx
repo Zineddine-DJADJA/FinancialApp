@@ -5,7 +5,7 @@ import { COMMON_CURRENCIES, isValidCurrency } from '../domain/money';
 import { BackupError } from '../domain/merge';
 import type { Category, ContrastPref, ThemePref } from '../domain/types';
 import { importBackup, updateSettings } from '../db/repo';
-import { Button, Card, CategoryIcon, IconButton, Segmented, useToast } from '../ui/components';
+import { Button, Card, CategoryIcon, IconButton, ScreenHeader, Segmented, useToast } from '../ui/components';
 import { LANGUAGES } from '../i18n';
 import { categoryName, useCategories, useSettings } from '../state';
 import { CategorySheet } from './CategorySheet';
@@ -58,9 +58,7 @@ export function SettingsScreen() {
 
   return (
     <div className="screen">
-      <header className="screen__head">
-        <h1 className="screen__title pixel">{t('settings.title')}</h1>
-      </header>
+      <ScreenHeader title={t('settings.title')} seed={2} />
 
       {/* Apparence */}
       <h2 className="section-label">{t('settings.appearance')}</h2>

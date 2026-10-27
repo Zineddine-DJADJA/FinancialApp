@@ -47,11 +47,41 @@ export function IconButton({ label, children, ...rest }: ButtonHTMLAttributes<HT
   );
 }
 
-export function Card({ ledge, className = '', style, children }: { ledge?: string; className?: string; style?: CSSProperties; children: ReactNode }) {
+/** Carte blanche à contour fin, ou grand aplat vert (`panel`). */
+export function Card({ panel, className = '', style, children }: { panel?: boolean; className?: string; style?: CSSProperties; children: ReactNode }) {
   return (
-    <div className={`card ${className}`} style={{ ...style, ...(ledge ? { '--card-ledge': ledge } : {}) } as CSSProperties}>
+    <div className={`card ${panel ? 'card--panel' : ''} ${className}`} style={style}>
       {children}
     </div>
+  );
+}
+
+/** En-tête d'écran : titre pixel noir, sous-titre pixel vert (« ONLINE / SHOPPING »). */
+export function ScreenHeader({ title, subtitle, seed }: { title: string; subtitle?: string; seed?: number }) {
+  return (
+    <header className="screen__head">
+      <PixelSparkles seed={seed} />
+      <h1 className="screen__title pixel">{title}</h1>
+      {subtitle && <p className="screen__subtitle pixel pixel--green">{subtitle}</p>}
+    </header>
+  );
+}
+
+/**
+ * Petits carrés verts éparpillés, comme les pixels flottants de la charte.
+ * Purement décoratif : masqué aux lecteurs d'écran.
+ */
+export function PixelSparkles({ seed = 0 }: { seed?: number }) {
+  // [gauche %, haut %, taille px]
+  const spots = [
+    [70, 6, 10], [78, 52, 7], [86, 16, 12], [92, 70, 8], [97, 34, 7], [73, 88, 6],
+  ].map(([x, y, s]) => [x - (seed % 3) * 4, y, s]);
+  return (
+    <span className="pixel-sparkles" aria-hidden="true">
+      {spots.map(([x, y, s], i) => (
+        <span key={i} style={{ left: `${x}%`, top: `${y}%`, width: s, height: s }} />
+      ))}
+    </span>
   );
 }
 

@@ -5,7 +5,7 @@ import { analyzePeriod } from '../domain/analytics';
 import { minorDigits } from '../domain/money';
 import { diffDays, periodContaining, shiftPeriod, todayISO, type PeriodKind } from '../domain/periods';
 import type { Expense } from '../domain/types';
-import { Card, CategoryIcon, IconButton, Segmented } from '../ui/components';
+import { Card, CategoryIcon, IconButton, ScreenHeader, Segmented } from '../ui/components';
 import { CompareBars, CumulativeChart, Donut } from '../ui/charts';
 import { categoryName, useCategories, useFormat, useSettings } from '../state';
 import { ComparisonLine } from './Comparison';
@@ -51,9 +51,7 @@ export function AnalysisScreen({ expenses }: { expenses: Expense[] }) {
 
   return (
     <div className="screen">
-      <header className="screen__head">
-        <h1 className="screen__title pixel">{t('analysis.title')}</h1>
-      </header>
+      <ScreenHeader title={t('analysis.title')} seed={1} />
 
       <Segmented
         label={t('analysis.kind')}
@@ -87,7 +85,7 @@ export function AnalysisScreen({ expenses }: { expenses: Expense[] }) {
         </IconButton>
       </nav>
 
-      <Card className="card-pad">
+      <Card panel className="card-pad">
         <p className="small muted strong" style={{ margin: 0 }}>{t('analysis.count', { count: analysis.count })}</p>
         <p className="hero num">{f.money(analysis.total, currency)}</p>
         <ComparisonLine analysis={analysis} currency={currency} />
@@ -110,7 +108,7 @@ export function AnalysisScreen({ expenses }: { expenses: Expense[] }) {
         <p className="notice" style={{ marginTop: 20, textAlign: 'center' }}>{t('analysis.empty')}</p>
       ) : (
         <>
-          <Card className="card-pad" style={{ marginTop: 16 }} ledge="var(--accent)">
+          <Card className="card-pad" style={{ marginTop: 16 }}>
             <h2 className="chart-title">{t('analysis.byCategory')}</h2>
             <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}>
               <Donut
@@ -135,7 +133,7 @@ export function AnalysisScreen({ expenses }: { expenses: Expense[] }) {
             </ul>
           </Card>
 
-          <Card className="card-pad" style={{ marginTop: 16 }} ledge="var(--accent)">
+          <Card className="card-pad" style={{ marginTop: 16 }}>
             <h2 className="chart-title">{t('analysis.evolution')}</h2>
             <CumulativeChart
               current={analysis.series.map((s) => s.total)}

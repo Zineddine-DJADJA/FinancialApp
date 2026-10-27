@@ -1,14 +1,21 @@
-/* ---------- Cartes : contour encre + rebord coloré ---------- */
+/* ---------- Cartes ---------- */
 
+/* Ligne / carte blanche à contour fin, comme les champs « Email / Password » de la charte. */
 .card {
   background: var(--surface);
   border: var(--lw) solid var(--line);
   border-radius: var(--radius-card);
-  /* Le « rebord » : une bande de couleur sous la carte, elle-même cernée d'encre. */
-  box-shadow:
-    0 var(--ledge-h) 0 0 var(--card-ledge, var(--ledge)),
-    0 var(--ledge-h) 0 var(--lw) var(--line);
-  margin-bottom: calc(var(--ledge-h) + 4px);
+}
+
+/* Grand aplat vert tendre aux coins très arrondis (panneau produit de la charte). */
+.card--panel {
+  background: var(--panel);
+  border-color: transparent;
+  border-radius: var(--radius-panel);
+}
+
+[data-contrast='high'] .card--panel {
+  border-color: var(--line);
 }
 
 /* ---------- Boutons ---------- */
@@ -22,22 +29,20 @@
   padding: 0 20px;
   border: var(--lw) solid var(--line);
   border-radius: 999px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
   background: var(--surface);
   color: var(--ink);
-  box-shadow: 0 4px 0 0 var(--line);
-  transform: translateY(0);
-  transition: transform 90ms ease-out, box-shadow 90ms ease-out;
+  transition: transform 100ms ease-out, opacity 100ms ease-out;
   user-select: none;
 }
 
-/* Retour immédiat dès l'appui : le bouton « s'enfonce » dans son ombre. */
+/* Retour immédiat dès l'appui. */
 .btn:active:not(:disabled) {
-  transform: translateY(4px);
-  box-shadow: 0 0 0 0 var(--line);
+  transform: scale(0.97);
 }
 
+/* Pilule noire de la charte (« Shop now », « Log in »). */
 .btn--primary {
   background: var(--primary);
   color: var(--on-primary);
@@ -58,11 +63,6 @@
 .btn--ghost {
   background: transparent;
   border-color: transparent;
-  box-shadow: none;
-}
-
-.btn--ghost:active:not(:disabled) {
-  transform: scale(0.97);
 }
 
 .btn--block {
@@ -70,7 +70,7 @@
 }
 
 .btn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: default;
 }
 
@@ -82,51 +82,58 @@
   height: var(--tap);
   flex: none;
   border: var(--lw) solid var(--line);
-  border-radius: 14px;
+  border-radius: 999px;
   background: var(--surface);
   color: var(--ink);
-  box-shadow: 0 3px 0 0 var(--line);
-  transition: transform 90ms ease-out, box-shadow 90ms ease-out;
+  transition: transform 100ms ease-out;
 }
 
 .icon-btn:active:not(:disabled) {
-  transform: translateY(3px);
-  box-shadow: 0 0 0 0 var(--line);
+  transform: scale(0.92);
 }
 
 .icon-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
 }
 
-/* ---------- Pastilles (catégories, filtres) ---------- */
+/* ---------- Pastilles (catégories, dates) ---------- */
 
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-height: var(--tap);
-  padding: 0 14px;
+  padding: 0 16px;
   border: var(--lw) solid var(--line);
   border-radius: 999px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9375rem;
   background: var(--surface);
   color: var(--ink);
-  transition: transform 90ms ease-out;
+  transition: transform 100ms ease-out;
 }
 
 .chip:active {
   transform: scale(0.96);
 }
 
+/* Sélection : pilule noire, comme les boutons de la charte. */
 .chip[aria-pressed='true'] {
-  outline: 3px solid var(--ink);
-  outline-offset: 2px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
 }
 
 .chip--pastel {
-  color: #1a1f16;
-  border-color: #1a1f16;
+  color: #141712;
+  border-color: #141712;
+}
+
+.chip--pastel[aria-pressed='true'] {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+  color: #141712;
+  border-color: #141712;
 }
 
 /* ---------- Pictogramme de catégorie ---------- */
@@ -138,9 +145,9 @@
   flex: none;
   width: 40px;
   height: 40px;
-  border-radius: 13px;
-  border: var(--lw) solid #1a1f16;
-  color: #1a1f16;
+  border-radius: 999px;
+  border: var(--lw) solid #141712;
+  color: #141712;
 }
 
 /* ---------- Contrôle segmenté (Semaine / Mois / Année) ---------- */
@@ -157,18 +164,17 @@
 .segmented button {
   flex: 1;
   min-height: 40px;
-  border: var(--lw) solid transparent;
+  border: none;
   border-radius: 999px;
   background: transparent;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9375rem;
   color: var(--ink);
 }
 
 .segmented button[aria-pressed='true'] {
-  background: var(--accent);
-  color: var(--on-accent);
-  border-color: #1a1f16;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 /* ---------- Champs ---------- */
@@ -181,16 +187,16 @@
 
 .field > span {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-2);
 }
 
 .input {
   width: 100%;
   min-height: 48px;
-  padding: 0 14px;
+  padding: 0 16px;
   border: var(--lw) solid var(--line);
-  border-radius: var(--radius-field);
+  border-radius: 999px;
   background: var(--surface);
   color: var(--ink);
   font-size: 1.0625rem; /* ≥ 16 px : évite le zoom automatique de Safari */
@@ -205,10 +211,10 @@ select.input {
   appearance: none;
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
     linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
+  background-position: calc(100% - 22px) 50%, calc(100% - 16px) 50%;
   background-size: 6px 6px;
   background-repeat: no-repeat;
-  padding-right: 36px;
+  padding-right: 40px;
 }
 
 /* ---------- Panneau du bas (sheet) ---------- */
@@ -230,12 +236,15 @@ select.input {
   display: flex;
   flex-direction: column;
   background: var(--bg);
-  border: var(--lw) solid var(--line);
-  border-bottom: none;
-  border-radius: 28px 28px 0 0;
+  border-radius: 32px 32px 0 0;
   padding-bottom: var(--safe-bottom);
   margin: 0 auto;
   max-width: 560px;
+}
+
+[data-mode='dark'] .sheet {
+  border: var(--lw) solid var(--line);
+  border-bottom: none;
 }
 
 .sheet:focus {
@@ -267,7 +276,7 @@ select.input {
 
 .sheet__title {
   margin: 0;
-  font-size: 1.375rem;
+  font-size: 1.25rem;
 }
 
 .sheet__body {
@@ -289,12 +298,12 @@ select.input {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 6px 6px 6px 18px;
+  padding: 6px 6px 6px 20px;
   min-height: 56px;
-  border-radius: 20px;
+  border-radius: 999px;
   background: var(--primary);
   color: var(--on-primary);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .toast span {
@@ -303,18 +312,18 @@ select.input {
 
 .toast button {
   min-height: var(--tap);
-  padding: 0 16px;
-  border-radius: 14px;
-  border: 2px solid var(--on-primary);
-  background: transparent;
-  color: var(--on-primary);
+  padding: 0 18px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 700;
 }
 
 /* ---------- Divers ---------- */
 
 .section-label {
-  margin: 20px 4px 8px;
+  margin: 22px 4px 8px;
   font-size: 0.875rem;
   font-weight: 700;
   color: var(--text-2);

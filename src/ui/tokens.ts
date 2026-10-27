@@ -1,6 +1,9 @@
 /**
  * Design tokens — source unique des couleurs de l'app.
  *
+ * Charte « ART.flora » : fond blanc, grands aplats vert tendre, boutons pilule noirs,
+ * contours fins à l'encre, accents rose. En sombre : fond noir, aplats vert profond.
+ *
  * Les couleurs sont injectées en variables CSS au démarrage (voir theme.ts) et
  * leurs contrastes sont vérifiés par un test automatique (tokens.test.ts) :
  * c'est ce qui garantit la lisibilité en plein soleil comme dans le noir.
@@ -11,25 +14,24 @@
 export interface ThemeTokens {
   /** Fond de l'écran. */
   bg: string;
-  /** Cartes, champs, touches. */
+  /** Lignes de la liste, champs, touches. */
   surface: string;
+  /** Grands aplats verts (carte du total, graphiques). */
+  panel: string;
   /** Texte principal et pictogrammes. */
   ink: string;
   /** Texte secondaire (notes, légendes). */
   text2: string;
-  /** Contours des cartes et contrôles. */
+  /** Contours fins des lignes et contrôles. */
   line: string;
-  /** Aplat de sélection (onglet actif, segment choisi). */
+  /** Vert vif : sélection, bouton « + », aire de la courbe. */
   accent: string;
   onAccent: string;
-  /** Barre de navigation. */
-  nav: string;
-  onNav: string;
-  /** Bouton principal. */
+  /** Bouton principal (pilule noire). */
   primary: string;
   onPrimary: string;
-  /** Rebord coloré par défaut sous les cartes. */
-  ledge: string;
+  /** Petits carrés décoratifs en pixel art. */
+  pixel: string;
   /** Hausse des dépenses (mauvais signe) / baisse (bon signe). */
   up: string;
   down: string;
@@ -40,94 +42,90 @@ export interface ThemeTokens {
 }
 
 /** Texte posé sur les aplats pastel (catégories), identique dans tous les thèmes. */
-export const ON_PASTEL = '#1A1F16';
+export const ON_PASTEL = '#141712';
 
 export const themes: Record<'light' | 'dark' | 'lightHigh' | 'darkHigh', ThemeTokens> = {
   light: {
-    bg: '#E3F4B0',
-    surface: '#F7FCEA',
-    ink: '#1A1F16',
-    text2: '#3F4B2C',
-    line: '#1A1F16',
-    accent: '#B9E27A',
-    onAccent: '#1A1F16',
-    nav: '#7FB35A',
-    onNav: '#1A1F16',
-    primary: '#1A1F16',
-    onPrimary: '#E3F4B0',
-    ledge: '#B9E27A',
-    up: '#962818',
-    down: '#285F1C',
-    scrim: 'rgba(26, 31, 22, 0.45)',
+    bg: '#FFFFFF',
+    surface: '#FFFFFF',
+    panel: '#E2F8B4',
+    ink: '#141712',
+    text2: '#4B5541',
+    line: '#141712',
+    accent: '#C5EC7C',
+    onAccent: '#141712',
+    primary: '#141712',
+    onPrimary: '#FFFFFF',
+    pixel: '#B5E26A',
+    up: '#B42B44',
+    down: '#2F6B17',
+    scrim: 'rgba(20, 23, 18, 0.45)',
     lineWidth: 1.5,
   },
   dark: {
-    bg: '#11180E',
-    surface: '#1B2616',
-    ink: '#EEF7D6',
-    text2: '#B9C9A0',
-    line: '#C9DAAE',
-    accent: '#B9E27A',
-    onAccent: '#1A1F16',
-    nav: '#2B4520',
-    onNav: '#EEF7D6',
-    primary: '#B9E27A',
-    onPrimary: '#1A1F16',
-    ledge: '#4E7A32',
-    up: '#FFA493',
-    down: '#A6E08A',
-    scrim: 'rgba(0, 0, 0, 0.6)',
+    bg: '#0B0D0A',
+    surface: '#151913',
+    panel: '#22331A',
+    ink: '#F4FAEA',
+    text2: '#BCCAA8',
+    line: '#8E9C7E',
+    accent: '#C5EC7C',
+    onAccent: '#141712',
+    primary: '#C5EC7C',
+    onPrimary: '#141712',
+    pixel: '#5E8A36',
+    up: '#FF9DAB',
+    down: '#A9E07F',
+    scrim: 'rgba(0, 0, 0, 0.65)',
     lineWidth: 1.5,
   },
   // Contraste élevé : plein soleil, écran à faible luminosité, vue fatiguée.
   lightHigh: {
-    bg: '#E8F7BC',
-    surface: '#FCFFF3',
-    ink: '#0B0E08',
-    text2: '#222B16',
-    line: '#0B0E08',
-    accent: '#B9E27A',
-    onAccent: '#0B0E08',
-    nav: '#8FC56A',
-    onNav: '#0B0E08',
-    primary: '#0B0E08',
-    onPrimary: '#F2FBD8',
-    ledge: '#0B0E08',
-    up: '#7A1A0C',
-    down: '#1A4A10',
-    scrim: 'rgba(11, 14, 8, 0.6)',
+    bg: '#FFFFFF',
+    surface: '#FFFFFF',
+    panel: '#E9FAC6',
+    ink: '#000000',
+    text2: '#232A1C',
+    line: '#000000',
+    accent: '#B9E46A',
+    onAccent: '#000000',
+    primary: '#000000',
+    onPrimary: '#FFFFFF',
+    pixel: '#8CC84B',
+    up: '#8A1428',
+    down: '#1D4D0B',
+    scrim: 'rgba(0, 0, 0, 0.6)',
     lineWidth: 2,
   },
   darkHigh: {
-    bg: '#060904',
-    surface: '#11180D',
+    bg: '#000000',
+    surface: '#0E110C',
+    panel: '#1B2913',
     ink: '#FFFFFF',
     text2: '#E3EED2',
     line: '#FFFFFF',
-    accent: '#C8EE8C',
-    onAccent: '#0B0E08',
-    nav: '#1E3316',
-    onNav: '#FFFFFF',
-    primary: '#C8EE8C',
-    onPrimary: '#0B0E08',
-    ledge: '#C8EE8C',
-    up: '#FFC2B6',
-    down: '#C2F5A8',
-    scrim: 'rgba(0, 0, 0, 0.75)',
+    accent: '#D2F592',
+    onAccent: '#000000',
+    primary: '#D2F592',
+    onPrimary: '#000000',
+    pixel: '#7DB34A',
+    up: '#FFC2CB',
+    down: '#C6F5A6',
+    scrim: 'rgba(0, 0, 0, 0.8)',
     lineWidth: 2,
   },
 };
 
 /** Couleurs proposées pour les catégories (toujours avec du texte ON_PASTEL). */
 export const CATEGORY_COLORS = [
+  '#B5E26A', // vert tendre
+  '#F7C6CC', // rose
   '#A9D8B4', // sauge
   '#C7B1DF', // lavande
   '#FFC94A', // moutarde
   '#F2A597', // saumon
   '#A8DCE0', // menthe
-  '#F7C6CC', // rose
   '#D9D2C3', // grège
-  '#B9E27A', // vert tendre
   '#FFB37A', // abricot
   '#9EC1F2', // ciel
   '#E6C9A8', // sable
