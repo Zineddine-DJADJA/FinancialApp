@@ -5,6 +5,9 @@ Pousse est une petite application pour noter les dépenses du quotidien, pensée
 - **100 % hors ligne** : les données restent sur le téléphone, sans compte ni serveur.
 - **Gratuite à distribuer** : sur iPhone, elle s'installe comme une application web (PWA) ; sur Android, en PWA ou en APK.
 - **Fusion à deux** : chacun exporte un fichier, l'autre l'importe. Les doublons sont éliminés grâce à l'identifiant unique de chaque dépense.
+- **Deux profils, Zizou et Zuzu** : chaque dépense est notée au nom de la personne qui l'a payée. L'analyse se filtre par personne.
+- **Calendrier** : vue mensuelle avec le total de chaque jour, et ajout d'une dépense à une date précise.
+- **Export CSV** pour Excel, Numbers ou Google Sheets, en plus de la sauvegarde JSON.
 - **Français et anglais**, multi-devise avec des taux saisis à la main, thème clair et sombre automatique, mode contraste élevé.
 
 ---
@@ -201,6 +204,20 @@ Comment fonctionne la fusion ([src/domain/merge.ts](src/domain/merge.ts)) :
 - Les lignes invalides d'un fichier sont ignorées et comptées ; le reste est importé.
 
 L'export contient **tout**. C'est aussi ta sauvegarde : garde le dernier quelque part.
+
+### Profils Zizou et Zuzu
+
+- Au premier lancement, l'app demande qui utilise le téléphone. Le choix se change dans **Réglages → Profil**.
+- À chaque saisie, « Qui a payé ? » est réglé sur le profil du téléphone. On peut choisir l'autre personne, par exemple pour noter une dépense faite par Zuzu depuis le téléphone de Zizou.
+- Dans **Analyse**, le filtre **Tous / Zizou / Zuzu** s'applique à tout l'écran. En mode « Tous », une carte **Par personne** montre qui a dépensé combien sur la période.
+- Il n'y a que ces deux profils, volontairement. Les dépenses saisies avant l'ajout des profils apparaissent comme « Non attribué ».
+
+### Export CSV
+
+**Réglages → Exporter en CSV** crée un tableau avec une ligne par dépense : date, montant, devise, montant converti, catégorie, note, profil, identifiant.
+
+- En français, le séparateur est « ; » et la virgule est décimale, comme l'attend Excel en France. En anglais, c'est « , » et le point.
+- Le CSV sert à consulter ou retravailler les chiffres. Il **ne se réimporte pas** : pour sauvegarder ou fusionner, utilise **Exporter** (JSON).
 
 ## 7. Lisibilité en toute lumière
 

@@ -52,7 +52,10 @@
     "swipeHint": "Glisse vers la gauche pour supprimer",
     "dayTotal": "Total du jour : {{amount}}",
     "tip": "Astuce : touche une dépense pour la modifier, glisse-la vers la gauche pour la supprimer.",
-    "dismissTip": "Masquer l'astuce"
+    "dismissTip": "Masquer l'astuce",
+    "view": "Affichage",
+    "viewList": "Liste",
+    "viewCalendar": "Calendrier"
   },
   "form": {
     "newTitle": "Nouvelle dépense",
@@ -131,7 +134,10 @@
     },
     "about": "À propos",
     "privacy": "Tes données restent sur ce téléphone : aucun compte, aucun serveur. Pense à exporter de temps en temps.",
-    "version": "Version {{version}}"
+    "version": "Version {{version}}",
+    "exportCsv": "Exporter en CSV",
+    "exportCsvHint": "Tableau des dépenses pour Excel, Numbers ou Google Sheets. Pour une sauvegarde ou une fusion, utilise plutôt « Exporter ».",
+    "exportedCsv": "Fichier CSV prêt"
   },
   "category": {
     "newTitle": "Nouvelle catégorie",
@@ -149,5 +155,33 @@
     "nameRequired": "Donne-lui un nom.",
     "fallbackLocked": "« Autres » ne peut pas être supprimée : elle accueille les dépenses sans catégorie.",
     "preview": "Aperçu"
+  },
+  "calendar": {
+    "prevMonth": "Mois précédent",
+    "nextMonth": "Mois suivant",
+    "noExpense": "Aucune dépense ce jour-là.",
+    "addOnDay": "Ajouter une dépense ce jour-là"
+  },
+  "profile": {
+    "title": "Profil",
+    "label": "Profil",
+    "welcome": "Bienvenue",
+    "question": "Qui utilise ce téléphone ?",
+    "hint": "Chaque dépense est notée au nom de la personne qui l'a faite. Tu pourras changer de profil dans les réglages.",
+    "who": "Qui a payé ?",
+    "filter": "Personne",
+    "all": "Tous",
+    "byPerson": "Par personne",
+    "unassigned": "Non attribué"
+  },
+  "csv": {
+    "date": "Date",
+    "amount": "Montant",
+    "currency": "Devise",
+    "converted": "Montant converti",
+    "category": "Catégorie",
+    "note": "Note",
+    "profile": "Profil",
+    "id": "Identifiant"
   }
 }

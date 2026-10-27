@@ -1,5 +1,5 @@
 import { isValidCurrency } from './money';
-import type { Backup, Category, CurrencyCode, Expense } from './types';
+import { isProfileId, type Backup, type Category, type CurrencyCode, type Expense } from './types';
 
 /**
  * Fusion des données lors d'un import.
@@ -70,7 +70,8 @@ function asExpense(raw: unknown): Expense | null {
     !isStr(r.date) || !/^\d{4}-\d{2}-\d{2}$/.test(r.date) ||
     !isNum(r.createdAt) || !isNum(r.updatedAt) ||
     !isOptNum(r.deletedAt) ||
-    !(r.note === undefined || r.note === null || isStr(r.note))
+    !(r.note === undefined || r.note === null || isStr(r.note)) ||
+    !(r.profile === undefined || r.profile === null || isProfileId(r.profile))
   ) {
     return null;
   }
@@ -85,6 +86,7 @@ function asExpense(raw: unknown): Expense | null {
   };
   if (isStr(r.note) && r.note) expense.note = r.note;
   if (isNum(r.deletedAt)) expense.deletedAt = r.deletedAt;
+  if (isProfileId(r.profile)) expense.profile = r.profile;
   return expense;
 }
 

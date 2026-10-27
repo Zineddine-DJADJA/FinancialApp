@@ -14,12 +14,21 @@ export function useSettings(): Settings {
   return useLiveQuery(() => db.settings.get('app'), []) ?? FALLBACK_SETTINGS;
 }
 
+/** Comme `useSettings`, mais indique aussi si la base a fini de charger (pour l'écran de choix du profil). */
+export function useSettingsState(): { settings: Settings; loaded: boolean } {
+  const result = useLiveQuery(async () => (await db.settings.get('app')) ?? null, [], 'loading' as const);
+  if (result === 'loading') return { settings: FALLBACK_SETTINGS, loaded: false };
+  return { settings: result ?? FALLBACK_SETTINGS, loaded: true };
+}
+
 export interface CategoryIndex {
   /** Catégories actives, dans l'ordre d'affichage. */
   list: Category[];
   /** Résout un id en catégorie active ; les ids inconnus ou supprimés tombent sur « Autres ». */
   get: (id: string) => Category;
   ids: Set<string>;
+  /** Faux tant que la base n'a pas répondu (évite d'afficher « Autres » au démarrage). */
+  loaded: boolean;
 }
 
 const PLACEHOLDER_OTHER: Category = {
@@ -32,11 +41,11 @@ const PLACEHOLDER_OTHER: Category = {
 };
 
 export function useCategories(): CategoryIndex {
-  const all = useLiveQuery(() => db.categories.orderBy('order').toArray(), []) ?? [];
-  const list = all.filter((c) => !c.deletedAt);
+  const result = useLiveQuery(() => db.categories.orderBy('order').toArray(), []);
+  const list = (result ?? []).filter((c) => !c.deletedAt);
   const byId = new Map(list.map((c) => [c.id, c]));
   const other = byId.get(FALLBACK_CATEGORY_ID) ?? PLACEHOLDER_OTHER;
-  return { list, get: (id) => byId.get(id) ?? other, ids: new Set(byId.keys()) };
+  return { list, get: (id) => byId.get(id) ?? other, ids: new Set(byId.keys()), loaded: result !== undefined };
 }
 
 /** Dépenses actives, de la plus récente à la plus ancienne. `undefined` pendant le chargement. */

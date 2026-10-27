@@ -1,21 +1,23 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconChevronRight, IconDownload, IconPlus, IconUpload, IconX } from '@tabler/icons-react';
+import { IconChevronRight, IconDownload, IconFileSpreadsheet, IconPlus, IconUpload, IconX } from '@tabler/icons-react';
 import { COMMON_CURRENCIES, isValidCurrency } from '../domain/money';
 import { BackupError } from '../domain/merge';
 import type { Category, ContrastPref, ThemePref } from '../domain/types';
 import { importBackup, updateSettings } from '../db/repo';
 import { Button, Card, CategoryIcon, IconButton, PixelHeart, ScreenHeader, Segmented, useToast } from '../ui/components';
 import { LANGUAGES } from '../i18n';
-import { categoryName, useCategories, useSettings } from '../state';
+import { categoryName, useCategories, useFormat, useSettings } from '../state';
+import { ProfilePicker } from './profiles';
 import { CategorySheet } from './CategorySheet';
-import { exportBackup } from './backup';
+import { exportBackup, exportCsv } from './backup';
 
 export function SettingsScreen() {
   const { t } = useTranslation();
   const settings = useSettings();
   const categories = useCategories();
   const toast = useToast();
+  const { locale } = useFormat();
   const fileInput = useRef<HTMLInputElement>(null);
   const [categorySheet, setCategorySheet] = useState<{ open: boolean; editing: Category | null }>({ open: false, editing: null });
   const [newCurrency, setNewCurrency] = useState('');
@@ -44,6 +46,26 @@ export function SettingsScreen() {
     if (result !== 'cancelled') toast({ message: t('settings.exported') });
   }
 
+  async function onExportCsv() {
+    const result = await exportCsv({
+      locale,
+      defaultCurrency: settings.defaultCurrency,
+      rates: settings.rates,
+      categoryName: (id) => categoryName(categories.get(id), t),
+      headers: {
+        date: t('csv.date'),
+        amount: t('csv.amount'),
+        currency: t('csv.currency'),
+        converted: t('csv.converted'),
+        category: t('csv.category'),
+        note: t('csv.note'),
+        profile: t('csv.profile'),
+        id: t('csv.id'),
+      },
+    });
+    if (result !== 'cancelled') toast({ message: t('settings.exportedCsv') });
+  }
+
   function setRate(code: string, value: string) {
     const rate = Number(value.replace(',', '.'));
     if (!Number.isFinite(rate) || rate <= 0) return;
@@ -59,6 +81,13 @@ export function SettingsScreen() {
   return (
     <div className="screen">
       <ScreenHeader title={t('settings.title')} seed={2} />
+
+      {/* Profil */}
+      <h2 className="section-label">{t('profile.title')}</h2>
+      <Card className="card-pad stack">
+        <ProfilePicker value={settings.profile} label={t('profile.label')} onChange={(profile) => void updateSettings({ profile })} />
+        <p className="hint" style={{ margin: 0 }}>{t('profile.hint')}</p>
+      </Card>
 
       {/* Apparence */}
       <h2 className="section-label">{t('settings.appearance')}</h2>
@@ -184,6 +213,11 @@ export function SettingsScreen() {
           {t('settings.export')}
         </Button>
         <p className="hint" style={{ margin: 0 }}>{t('settings.exportHint')}</p>
+        <Button block onClick={onExportCsv}>
+          <IconFileSpreadsheet size={20} aria-hidden="true" />
+          {t('settings.exportCsv')}
+        </Button>
+        <p className="hint" style={{ margin: 0 }}>{t('settings.exportCsvHint')}</p>
         <Button block onClick={() => fileInput.current?.click()}>
           <IconDownload size={20} aria-hidden="true" />
           {t('settings.import')}

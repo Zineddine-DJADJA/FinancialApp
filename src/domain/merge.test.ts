@@ -75,6 +75,12 @@ describe('parseBackup', () => {
     expect(r.rejected).toBe(2);
   });
 
+  it('conserve le profil et refuse un profil inconnu', () => {
+    const r = parseBackup(file({ expenses: [{ ...base, profile: 'zuzu' }, { ...base, id: 'b', profile: 'paul' }, { ...base, id: 'c' }] }));
+    expect(r.expenses.map((x) => x.profile)).toEqual(['zuzu', undefined]);
+    expect(r.rejected).toBe(1);
+  });
+
   it('refuse les fichiers qui ne sont pas des sauvegardes', () => {
     expect(() => parseBackup('pas du json')).toThrow(BackupError);
     expect(() => parseBackup('{"hello":1}')).toThrow(/not-a-backup/);

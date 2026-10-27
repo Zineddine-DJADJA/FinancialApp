@@ -52,7 +52,10 @@
     "swipeHint": "Swipe left to delete",
     "dayTotal": "Day total: {{amount}}",
     "tip": "Tip: tap an expense to edit it, swipe it left to delete it.",
-    "dismissTip": "Hide tip"
+    "dismissTip": "Hide tip",
+    "view": "View",
+    "viewList": "List",
+    "viewCalendar": "Calendar"
   },
   "form": {
     "newTitle": "New expense",
@@ -131,7 +134,10 @@
     },
     "about": "About",
     "privacy": "Your data stays on this phone: no account, no server. Remember to export now and then.",
-    "version": "Version {{version}}"
+    "version": "Version {{version}}",
+    "exportCsv": "Export as CSV",
+    "exportCsvHint": "A spreadsheet of expenses for Excel, Numbers or Google Sheets. For a backup or a merge, use “Export” instead.",
+    "exportedCsv": "CSV file ready"
   },
   "category": {
     "newTitle": "New category",
@@ -149,5 +155,33 @@
     "nameRequired": "Give it a name.",
     "fallbackLocked": "“Other” can't be deleted: it holds expenses without a category.",
     "preview": "Preview"
+  },
+  "calendar": {
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "noExpense": "No expenses that day.",
+    "addOnDay": "Add an expense on this day"
+  },
+  "profile": {
+    "title": "Profile",
+    "label": "Profile",
+    "welcome": "Welcome",
+    "question": "Who uses this phone?",
+    "hint": "Each expense is recorded under the person who made it. You can switch profile in Settings.",
+    "who": "Who paid?",
+    "filter": "Person",
+    "all": "Both",
+    "byPerson": "By person",
+    "unassigned": "Unassigned"
+  },
+  "csv": {
+    "date": "Date",
+    "amount": "Amount",
+    "currency": "Currency",
+    "converted": "Converted amount",
+    "category": "Category",
+    "note": "Note",
+    "profile": "Profile",
+    "id": "ID"
   }
 }

@@ -18,6 +18,8 @@ export interface Expense {
   categoryId: string;
   date: ISODate;
   note?: string;
+  /** Qui a fait la dépense. Absent sur les dépenses saisies avant l'ajout des profils. */
+  profile?: ProfileId;
   /** Horodatages en millisecondes. `updatedAt` départage deux versions lors d'une fusion. */
   createdAt: number;
   updatedAt: number;
@@ -49,6 +51,27 @@ export interface Settings {
   language: LanguagePref;
   theme: ThemePref;
   contrast: ContrastPref;
+  /** Profil de la personne qui utilise ce téléphone ; `undefined` tant qu'il n'est pas choisi. */
+  profile?: ProfileId;
+}
+
+/**
+ * Les deux seuls profils possibles. La liste est volontairement fermée :
+ * l'app est faite pour deux personnes, pas plus.
+ */
+export const PROFILES = [
+  { id: 'zizou', name: 'Zizou' },
+  { id: 'zuzu', name: 'Zuzu' },
+] as const;
+
+export type ProfileId = (typeof PROFILES)[number]['id'];
+
+export function isProfileId(value: unknown): value is ProfileId {
+  return PROFILES.some((p) => p.id === value);
+}
+
+export function profileName(id: ProfileId): string {
+  return PROFILES.find((p) => p.id === id)!.name;
 }
 
 /** Format du fichier d'export / sauvegarde. */

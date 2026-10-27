@@ -32,7 +32,7 @@ export async function updateSettings(patch: Partial<Omit<Settings, 'id'>>, datab
   await database.settings.put(next);
 }
 
-export type ExpenseDraft = Pick<Expense, 'amountMinor' | 'currency' | 'categoryId' | 'date' | 'note'>;
+export type ExpenseDraft = Pick<Expense, 'amountMinor' | 'currency' | 'categoryId' | 'date' | 'note' | 'profile'>;
 
 export async function saveExpense(draft: ExpenseDraft, id?: string, database: PousseDB = db): Promise<string> {
   const now = Date.now();

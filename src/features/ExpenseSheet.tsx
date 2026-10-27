@@ -3,17 +3,29 @@ import { useTranslation } from 'react-i18next';
 import { IconBackspace, IconCalendar, IconTrash } from '@tabler/icons-react';
 import { minorDigits, minorToInput, parseToMinor } from '../domain/money';
 import { addDays, todayISO } from '../domain/periods';
-import type { Expense } from '../domain/types';
+import type { Expense, ProfileId } from '../domain/types';
 import { deleteExpense, restoreExpense, saveExpense } from '../db/repo';
 import { Button, Sheet, haptic, useToast } from '../ui/components';
 import { CategoryGlyph } from '../ui/icons';
 import { categoryName, useCategories, useFormat, useSettings } from '../state';
+import { ProfilePicker } from './profiles';
 
 /**
  * Saisie rapide : montant au pavé numérique → catégorie → Enregistrer.
- * La date vaut « aujourd'hui » par défaut. Sert aussi à la modification.
+ * La date vaut « aujourd'hui » par défaut (ou le jour choisi dans le calendrier),
+ * la personne vaut le profil du téléphone. Sert aussi à la modification.
  */
-export function ExpenseSheet({ open, editing, onClose }: { open: boolean; editing: Expense | null; onClose: () => void }) {
+export function ExpenseSheet({
+  open,
+  editing,
+  defaultDate,
+  onClose,
+}: {
+  open: boolean;
+  editing: Expense | null;
+  defaultDate?: string;
+  onClose: () => void;
+}) {
   const { t } = useTranslation();
   const f = useFormat();
   const settings = useSettings();
@@ -25,6 +37,7 @@ export function ExpenseSheet({ open, editing, onClose }: { open: boolean; editin
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [date, setDate] = useState(todayISO());
   const [note, setNote] = useState('');
+  const [profile, setProfile] = useState<ProfileId | undefined>(undefined);
   const [errors, setErrors] = useState<{ amount?: boolean; category?: boolean }>({});
 
   // Réinitialise le formulaire à chaque ouverture.
@@ -33,7 +46,8 @@ export function ExpenseSheet({ open, editing, onClose }: { open: boolean; editin
     setAmount(editing ? minorToInput(editing.amountMinor, editing.currency) : '');
     setCurrency(editing?.currency ?? settings.defaultCurrency);
     setCategoryId(editing?.categoryId ?? null);
-    setDate(editing?.date ?? todayISO());
+    setDate(editing?.date ?? defaultDate ?? todayISO());
+    setProfile(editing ? editing.profile : settings.profile);
     setNote(editing?.note ?? '');
     setErrors({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,7 +94,7 @@ export function ExpenseSheet({ open, editing, onClose }: { open: boolean; editin
       haptic(30);
       return;
     }
-    await saveExpense({ amountMinor: amountMinor!, currency, categoryId: categoryId!, date, note }, editing?.id);
+    await saveExpense({ amountMinor: amountMinor!, currency, categoryId: categoryId!, date, note, profile }, editing?.id);
     haptic(12);
     toast({ message: t(editing ? 'expenses.updated' : 'expenses.added') });
     onClose();
@@ -159,6 +173,10 @@ export function ExpenseSheet({ open, editing, onClose }: { open: boolean; editin
           />
         </span>
       </div>
+
+      {/* Qui a payé */}
+      <p className="section-label" style={{ marginTop: 6 }}>{t('profile.who')}</p>
+      <ProfilePicker value={profile} onChange={setProfile} label={t('profile.who')} />
 
       {/* Note */}
       <label className="field" style={{ marginTop: 6 }}>

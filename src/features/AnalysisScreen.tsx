@@ -4,11 +4,12 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { analyzePeriod } from '../domain/analytics';
 import { minorDigits } from '../domain/money';
 import { diffDays, periodContaining, shiftPeriod, todayISO, type PeriodKind } from '../domain/periods';
-import type { Expense } from '../domain/types';
+import { PROFILES, type Expense, type ProfileId } from '../domain/types';
 import { Card, CategoryIcon, IconButton, ScreenHeader, Segmented } from '../ui/components';
 import { CompareBars, CumulativeChart, Donut } from '../ui/charts';
 import { categoryName, useCategories, useFormat, useSettings } from '../state';
 import { ComparisonLine } from './Comparison';
+import { PROFILE_COLORS } from './profiles';
 
 export function AnalysisScreen({ expenses }: { expenses: Expense[] }) {
   const { t } = useTranslation();
@@ -19,15 +20,23 @@ export function AnalysisScreen({ expenses }: { expenses: Expense[] }) {
 
   const [kind, setKind] = useState<PeriodKind>('month');
   const [offset, setOffset] = useState(0);
+  const [who, setWho] = useState<'all' | ProfileId>('all');
   const period = shiftPeriod(periodContaining(today, kind), offset);
   const previousPeriod = shiftPeriod(period, -1);
   const currency = settings.defaultCurrency;
 
-  const { analysis, previous } = useMemo(() => {
+  const { analysis, previous, byPerson } = useMemo(() => {
     const ctx = { defaultCurrency: currency, rates: settings.rates, today, categoryIds: categories.ids };
-    return { analysis: analyzePeriod(expenses, period, ctx), previous: analyzePeriod(expenses, previousPeriod, ctx) };
+    // Filtre « Tous / Zizou / Zuzu » appliqué à toutes les analyses de l'écran.
+    const scoped = who === 'all' ? expenses : expenses.filter((e) => e.profile === who);
+    // Répartition par personne sur la période (toujours sur l'ensemble des dépenses).
+    const byPerson = [
+      ...PROFILES.map((p) => ({ id: p.id as ProfileId | null, name: p.name, total: analyzePeriod(expenses.filter((e) => e.profile === p.id), period, ctx).total })),
+      { id: null, name: '', total: analyzePeriod(expenses.filter((e) => !e.profile), period, ctx).total },
+    ];
+    return { analysis: analyzePeriod(scoped, period, ctx), previous: analyzePeriod(scoped, previousPeriod, ctx), byPerson };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expenses, period.start, kind, settings, today, categories.list.length]);
+  }, [expenses, period.start, kind, settings, today, categories.list.length, who]);
 
   // Pour les axes : montants arrondis, sans décimales.
   const compact = (minor: number) =>
@@ -66,6 +75,15 @@ export function AnalysisScreen({ expenses }: { expenses: Expense[] }) {
           { value: 'year', label: t('analysis.year') },
         ]}
       />
+
+      <div style={{ marginTop: 10 }}>
+        <Segmented<'all' | ProfileId>
+          label={t('profile.filter')}
+          value={who}
+          onChange={setWho}
+          options={[{ value: 'all', label: t('profile.all') }, ...PROFILES.map((p) => ({ value: p.id, label: p.name }))]}
+        />
+      </div>
 
       <nav className="period-nav" aria-label={t('analysis.kind')}>
         <IconButton label={t('analysis.prev')} onClick={() => setOffset((o) => o - 1)}>
@@ -108,6 +126,23 @@ export function AnalysisScreen({ expenses }: { expenses: Expense[] }) {
         <p className="notice" style={{ marginTop: 20, textAlign: 'center' }}>{t('analysis.empty')}</p>
       ) : (
         <>
+          {who === 'all' && (
+            <Card className="card-pad" style={{ marginTop: 16 }}>
+              <h2 className="chart-title">{t('profile.byPerson')}</h2>
+              <CompareBars
+                label={byPerson.map((p) => `${p.name || t('profile.unassigned')} ${f.money(p.total, currency)}`).join(', ')}
+                rows={byPerson
+                  .filter((p) => p.id || p.total > 0)
+                  .map((p) => ({
+                    label: p.id ? p.name : t('profile.unassigned'),
+                    value: p.total,
+                    display: f.money(p.total, currency),
+                    color: p.id ? PROFILE_COLORS[p.id] : undefined,
+                  }))}
+              />
+            </Card>
+          )}
+
           <Card className="card-pad" style={{ marginTop: 16 }}>
             <h2 className="chart-title">{t('analysis.byCategory')}</h2>
             <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}>

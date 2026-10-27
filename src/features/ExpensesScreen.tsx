@@ -5,14 +5,27 @@ import { IconTrash, IconX } from '@tabler/icons-react';
 import { analyzePeriod } from '../domain/analytics';
 import { convertMinor } from '../domain/currency';
 import { periodContaining, todayISO } from '../domain/periods';
-import type { Expense } from '../domain/types';
+import { profileName, type Expense } from '../domain/types';
 import { deleteExpense, restoreExpense } from '../db/repo';
-import { Button, Card, CategoryIcon, IconButton, PixelHeart, SPRING, ScreenHeader, haptic, useToast } from '../ui/components';
+import { Button, Card, CategoryIcon, IconButton, PixelHeart, SPRING, ScreenHeader, Segmented, haptic, useToast } from '../ui/components';
 import { categoryName, useCategories, useFormat, useSettings, type CategoryIndex } from '../state';
 import { ComparisonLine } from './Comparison';
+import { CalendarView } from './CalendarView';
+import { ProfileTag } from './profiles';
 
 const PAGE = 120;
 const TIP_KEY = 'pousse.tipHidden';
+const VIEW_KEY = 'pousse.expensesView';
+
+type View = 'list' | 'calendar';
+
+function readView(): View {
+  try {
+    return localStorage.getItem(VIEW_KEY) === 'calendar' ? 'calendar' : 'list';
+  } catch {
+    return 'list';
+  }
+}
 
 /** L'astuce reste masquée une fois fermée (mémorisée sur l'appareil). */
 function readTipHidden(): boolean {
@@ -23,7 +36,16 @@ function readTipHidden(): boolean {
   }
 }
 
-export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[]; onEdit: (e: Expense) => void; onAdd: () => void }) {
+export function ExpensesScreen({
+  expenses,
+  onEdit,
+  onAdd,
+}: {
+  expenses: Expense[];
+  onEdit: (e: Expense) => void;
+  /** Ouvre la saisie, éventuellement pour un jour précis (calendrier). */
+  onAdd: (date?: string) => void;
+}) {
   const { t } = useTranslation();
   const f = useFormat();
   const settings = useSettings();
@@ -31,6 +53,16 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
   const toast = useToast();
   const [limit, setLimit] = useState(PAGE);
   const [tipHidden, setTipHidden] = useState(readTipHidden);
+  const [view, setView] = useState<View>(readView);
+
+  function changeView(next: View) {
+    setView(next);
+    try {
+      localStorage.setItem(VIEW_KEY, next);
+    } catch {
+      // Préférence non mémorisée : sans gravité.
+    }
+  }
 
   function hideTip() {
     setTipHidden(true);
@@ -105,13 +137,33 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
           <PixelHeart size={40} />
           <h2 className="pixel" style={{ margin: '4px 0 8px', fontSize: '1.375rem' }}>{t('expenses.emptyTitle')}</h2>
           <p className="muted" style={{ margin: '0 0 16px' }}>{t('expenses.emptyBody')}</p>
-          <Button variant="primary" onClick={onAdd}>
+          <Button variant="primary" onClick={() => onAdd()}>
             {t('tabs.add')}
           </Button>
         </Card>
       )}
 
-      {days.map((day) => (
+      {expenses.length > 0 && (
+        <div style={{ marginTop: 18 }}>
+          <Segmented<View>
+            label={t('expenses.view')}
+            value={view}
+            onChange={changeView}
+            options={[
+              { value: 'list', label: t('expenses.viewList') },
+              { value: 'calendar', label: t('expenses.viewCalendar') },
+            ]}
+          />
+        </div>
+      )}
+
+      {view === 'calendar' && expenses.length > 0 && (
+        <CalendarView expenses={expenses} onAdd={onAdd} renderRow={(e) => (
+          <ExpenseRow key={e.id} expense={e} categories={categories} onOpen={() => onEdit(e)} onDelete={() => remove(e)} />
+        )} />
+      )}
+
+      {view === 'list' && days.map((day) => (
         <section key={day.date} aria-label={f.dayLabel(day.date)}>
           <h2 className="day-head">
             <span className="day-head__label">{f.dayLabel(day.date)}</span>
@@ -127,7 +179,7 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
         </section>
       ))}
 
-      {expenses.length > limit && (
+      {view === 'list' && expenses.length > limit && (
         <Button block onClick={() => setLimit((l) => l + PAGE)} style={{ marginTop: 8 }}>
           {t('expenses.showMore')}
         </Button>
@@ -136,7 +188,7 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
   );
 }
 
-function ExpenseRow({
+export function ExpenseRow({
   expense,
   categories,
   onOpen,
@@ -172,7 +224,7 @@ function ExpenseRow({
         type="button"
         className="card expense-row"
         onClick={onOpen}
-        aria-label={`${name}, ${f.money(expense.amountMinor, expense.currency)}${expense.note ? `, ${expense.note}` : ''}`}
+        aria-label={[name, f.money(expense.amountMinor, expense.currency), expense.profile && profileName(expense.profile), expense.note].filter(Boolean).join(', ')}
         aria-description={t('expenses.swipeHint')}
         drag="x"
         dragDirectionLock
@@ -187,7 +239,12 @@ function ExpenseRow({
         <CategoryIcon category={category} />
         <span className="grow">
           <span className="strong ellipsis" style={{ display: 'block' }}>{name}</span>
-          {expense.note && <span className="small muted ellipsis" style={{ display: 'block' }}>{expense.note}</span>}
+          {(expense.note || expense.profile) && (
+            <span className="row small muted" style={{ gap: 6, marginTop: 2 }}>
+              {expense.profile && <ProfileTag profile={expense.profile} />}
+              {expense.note && <span className="ellipsis">{expense.note}</span>}
+            </span>
+          )}
         </span>
         <span className="expense-row__amount">
           <span className="num" style={{ display: 'block' }}>{f.money(-expense.amountMinor, expense.currency)}</span>

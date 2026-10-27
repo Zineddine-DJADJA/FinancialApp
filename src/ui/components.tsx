@@ -169,12 +169,15 @@ export function Sheet({
   title,
   actions,
   children,
+  dismissible = true,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   actions?: ReactNode;
   children: ReactNode;
+  /** `false` : choix obligatoire (pas de fermeture par geste, retour ni bouton). */
+  dismissible?: boolean;
 }) {
   const id = useId();
   const titleId = `${id}-title`;
@@ -188,6 +191,10 @@ export function Sheet({
   useEffect(() => {
     if (!open) return;
     const previousFocus = document.activeElement as HTMLElement | null;
+    if (!dismissible) {
+      panelRef.current?.focus();
+      return () => previousFocus?.focus?.();
+    }
     sheetStack.push({ id, close: () => closeRef.current() });
     history.pushState({ sheet: id }, '');
     panelRef.current?.focus();
@@ -201,7 +208,7 @@ export function Sheet({
       }
       previousFocus?.focus?.();
     };
-  }, [open, id]);
+  }, [open, id, dismissible]);
 
   return createPortal(
     <AnimatePresence>
@@ -214,7 +221,7 @@ export function Sheet({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            onClick={onClose}
+            onClick={dismissible ? onClose : undefined}
           />
           <motion.div
             key="sheet"
@@ -228,7 +235,7 @@ export function Sheet({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={SPRING}
-            drag="y"
+            drag={dismissible ? 'y' : false}
             dragListener={false}
             dragControls={dragControls}
             dragConstraints={{ top: 0, bottom: 0 }}
@@ -247,9 +254,11 @@ export function Sheet({
                 </h2>
                 <div style={{ display: 'flex', gap: 8 }}>
                   {actions}
-                  <IconButton label={t('common.close')} onClick={onClose}>
-                    <IconX size={22} stroke={2.2} />
-                  </IconButton>
+                  {dismissible && (
+                    <IconButton label={t('common.close')} onClick={onClose}>
+                      <IconX size={22} stroke={2.2} />
+                    </IconButton>
+                  )}
                 </div>
               </div>
             </div>

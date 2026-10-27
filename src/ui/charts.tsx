@@ -168,7 +168,8 @@ export function CompareBars({
   rows,
   label,
 }: {
-  rows: { label: string; value: number; display: string; current?: boolean }[];
+  /** `color` remplace le vert (« current ») ou les hachures par défaut. */
+  rows: { label: string; value: number; display: string; current?: boolean; color?: string }[];
   label: string;
 }) {
   const max = Math.max(1, ...rows.map((r) => r.value));
@@ -189,7 +190,9 @@ export function CompareBars({
                 height: '100%',
                 borderRight: r.value > 0 ? 'var(--lw) solid var(--line)' : 'none',
                 borderRadius: 999,
-                background: r.current
+                background: r.color
+                  ? r.color
+                  : r.current
                   ? 'var(--accent)'
                   : 'repeating-linear-gradient(45deg, var(--text-2) 0 2px, transparent 2px 7px)',
               }}
