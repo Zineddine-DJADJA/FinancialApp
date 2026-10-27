@@ -2,9 +2,16 @@ import type { CurrencyCode } from './types';
 
 const digitsCache = new Map<string, number>();
 
-/** Nombre de décimales d'une devise (2 pour EUR, 0 pour JPY, 3 pour TND…). */
+/**
+ * Devises dont la subdivision officielle n'est plus utilisée au quotidien.
+ * Le riel cambodgien (KHR) a officiellement 2 décimales, mais les prix sont
+ * toujours ronds (ex. 12 500 ៛) : on le traite sans centimes.
+ */
+const DIGITS_OVERRIDE: Record<CurrencyCode, number> = { KHR: 0 };
+
+/** Nombre de décimales d'une devise (2 pour EUR, 0 pour JPY et KHR, 3 pour TND…). */
 export function minorDigits(currency: CurrencyCode): number {
-  let digits = digitsCache.get(currency);
+  let digits = DIGITS_OVERRIDE[currency] ?? digitsCache.get(currency);
   if (digits === undefined) {
     try {
       digits = new Intl.NumberFormat('en', { style: 'currency', currency }).resolvedOptions()
@@ -52,12 +59,14 @@ export function formatMoney(
     style: 'currency',
     currency,
     signDisplay: opts.signDisplay ?? 'auto',
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
   }).format(minor / 10 ** digits);
 }
 
 /** Liste courte de devises proposées ; toute devise ISO reste saisissable dans les réglages. */
 export const COMMON_CURRENCIES: CurrencyCode[] = [
-  'EUR', 'USD', 'GBP', 'CHF', 'CAD', 'DZD', 'MAD', 'TND', 'JPY', 'CNY', 'AED', 'TRY',
+  'EUR', 'USD', 'GBP', 'CHF', 'CAD', 'DZD', 'MAD', 'TND', 'JPY', 'CNY', 'AED', 'TRY', 'KHR',
 ];
 
 /** Vérifie qu'un code devise est reconnu par le navigateur. */

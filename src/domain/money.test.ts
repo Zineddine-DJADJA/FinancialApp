@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { convertMinor, rebaseRates } from './currency';
-import { minorToInput, parseToMinor } from './money';
+import { formatMoney, minorToInput, parseToMinor } from './money';
 
 describe('parseToMinor', () => {
   it('convertit sans erreur de flottant', () => {
@@ -10,6 +10,13 @@ describe('parseToMinor', () => {
     expect(parseToMinor('19.99', 'EUR')).toBe(1999);
     expect(parseToMinor('1500', 'JPY')).toBe(1500);
     expect(parseToMinor('1.250', 'TND')).toBe(1250);
+  });
+
+  it('traite le riel cambodgien sans centimes', () => {
+    expect(parseToMinor('12500', 'KHR')).toBe(12500);
+    expect(parseToMinor('12500.5', 'KHR')).toBeNull();
+    expect(formatMoney(12500, 'KHR', 'fr').replace(/\s/g, ' ')).toBe('12 500 KHR');
+    expect(convertMinor(40000, 'KHR', 'EUR', { KHR: 0.00023 })).toBe(920); // 40 000 ៛ ≈ 9,20 €
   });
 
   it('refuse les saisies invalides', () => {
