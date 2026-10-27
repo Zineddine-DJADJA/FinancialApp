@@ -7,3 +7,6 @@ android/.gradle
 *.keystore
 keystore.properties
 *.tsbuildinfo
+
+# Images d inspiration (Pinterest) : creations de tiers, gardees en local uniquement
+design-inspiration/
