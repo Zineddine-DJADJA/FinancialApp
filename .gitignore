@@ -6,3 +6,4 @@ android/.gradle
 *.jks
 *.keystore
 keystore.properties
+*.tsbuildinfo
