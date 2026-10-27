@@ -7,7 +7,7 @@ import { convertMinor } from '../domain/currency';
 import { periodContaining, todayISO } from '../domain/periods';
 import type { Expense } from '../domain/types';
 import { deleteExpense, restoreExpense } from '../db/repo';
-import { Button, Card, CategoryIcon, SPRING, ScreenHeader, haptic, useToast } from '../ui/components';
+import { Button, Card, CategoryIcon, PixelHeart, SPRING, ScreenHeader, haptic, useToast } from '../ui/components';
 import { categoryName, useCategories, useFormat, useSettings, type CategoryIndex } from '../state';
 import { ComparisonLine } from './Comparison';
 
@@ -69,6 +69,7 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
 
       {expenses.length === 0 && (
         <Card className="card-pad" style={{ marginTop: 20, textAlign: 'center' }}>
+          <PixelHeart size={40} />
           <h2 className="pixel" style={{ margin: '4px 0 8px', fontSize: '1.375rem' }}>{t('expenses.emptyTitle')}</h2>
           <p className="muted" style={{ margin: '0 0 16px' }}>{t('expenses.emptyBody')}</p>
           <Button variant="primary" onClick={onAdd}>

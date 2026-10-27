@@ -22,6 +22,8 @@ function toCss(t: ThemeTokens): string {
     `--primary:${t.primary}`,
     `--on-primary:${t.onPrimary}`,
     `--pixel:${t.pixel}`,
+    `--pink:${t.pink}`,
+    `--pink-panel:${t.pinkPanel}`,
     `--up:${t.up}`,
     `--down:${t.down}`,
     `--scrim:${t.scrim}`,

@@ -5,7 +5,7 @@ import { COMMON_CURRENCIES, isValidCurrency } from '../domain/money';
 import { BackupError } from '../domain/merge';
 import type { Category, ContrastPref, ThemePref } from '../domain/types';
 import { importBackup, updateSettings } from '../db/repo';
-import { Button, Card, CategoryIcon, IconButton, ScreenHeader, Segmented, useToast } from '../ui/components';
+import { Button, Card, CategoryIcon, IconButton, PixelHeart, ScreenHeader, Segmented, useToast } from '../ui/components';
 import { LANGUAGES } from '../i18n';
 import { categoryName, useCategories, useSettings } from '../state';
 import { CategorySheet } from './CategorySheet';
@@ -200,8 +200,13 @@ export function SettingsScreen() {
 
       {/* À propos */}
       <h2 className="section-label">{t('settings.about')}</h2>
-      <p className="hint">{t('settings.privacy')}</p>
-      <p className="hint">{t('settings.version', { version: __APP_VERSION__ })}</p>
+      <div className="notice row" style={{ alignItems: 'flex-start', marginTop: 0 }}>
+        <PixelHeart size={28} />
+        <div className="grow">
+          <p style={{ margin: 0 }}>{t('settings.privacy')}</p>
+          <p className="small muted" style={{ margin: '6px 0 0' }}>{t('settings.version', { version: __APP_VERSION__ })}</p>
+        </div>
+      </div>
 
       <CategorySheet
         open={categorySheet.open}

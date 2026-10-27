@@ -56,6 +56,20 @@ export function Card({ panel, className = '', style, children }: { panel?: boole
   );
 }
 
+/** Petit cœur en pixel art rose, comme celui de la charte. Décoratif. */
+export function PixelHeart({ size = 32 }: { size?: number }) {
+  // 9 × 8 pixels : k = contour, p = rose, w = reflet.
+  const rows = ['.kk...kk.', 'kppk.kppk', 'kpwpkpppk', 'kpwpppppk', 'kpppppppk', '.kpppppk.', '..kpppk..', '...kpk...'];
+  const fill: Record<string, string> = { k: 'var(--ink)', p: 'var(--pink)', w: '#FFFFFF' };
+  return (
+    <svg width={size} height={(size * 8) / 9} viewBox="0 0 9 8" shapeRendering="crispEdges" aria-hidden="true">
+      {rows.flatMap((row, y) =>
+        [...row].map((c, x) => (fill[c] ? <rect key={`${x}-${y}`} x={x} y={y} width={1.02} height={1.02} fill={fill[c]} /> : null)),
+      )}
+    </svg>
+  );
+}
+
 /** En-tête d'écran : titre pixel noir, sous-titre pixel vert (« ONLINE / SHOPPING »). */
 export function ScreenHeader({ title, subtitle, seed }: { title: string; subtitle?: string; seed?: number }) {
   return (
@@ -79,7 +93,11 @@ export function PixelSparkles({ seed = 0 }: { seed?: number }) {
   return (
     <span className="pixel-sparkles" aria-hidden="true">
       {spots.map(([x, y, s], i) => (
-        <span key={i} style={{ left: `${x}%`, top: `${y}%`, width: s, height: s }} />
+        // Deux pixels sur six en rose : une touche, pas plus.
+        <span
+          key={i}
+          style={{ left: `${x}%`, top: `${y}%`, width: s, height: s, ...(i === 1 || i === 4 ? { background: 'var(--pink)' } : {}) }}
+        />
       ))}
     </span>
   );

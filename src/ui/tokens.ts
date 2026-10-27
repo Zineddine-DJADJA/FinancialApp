@@ -32,6 +32,10 @@ export interface ThemeTokens {
   onPrimary: string;
   /** Petits carrés décoratifs en pixel art. */
   pixel: string;
+  /** Rose de la charte, utilisé avec parcimonie : pixels décoratifs, cœur. */
+  pink: string;
+  /** Fond rose pâle des encadrés d'information (comme le panneau rose de la charte). */
+  pinkPanel: string;
   /** Hausse des dépenses (mauvais signe) / baisse (bon signe). */
   up: string;
   down: string;
@@ -57,6 +61,8 @@ export const themes: Record<'light' | 'dark' | 'lightHigh' | 'darkHigh', ThemeTo
     primary: '#141712',
     onPrimary: '#FFFFFF',
     pixel: '#B5E26A',
+    pink: '#F49AAA',
+    pinkPanel: '#FDE4E8',
     up: '#B42B44',
     down: '#2F6B17',
     scrim: 'rgba(20, 23, 18, 0.45)',
@@ -74,6 +80,8 @@ export const themes: Record<'light' | 'dark' | 'lightHigh' | 'darkHigh', ThemeTo
     primary: '#C5EC7C',
     onPrimary: '#141712',
     pixel: '#5E8A36',
+    pink: '#E07D90',
+    pinkPanel: '#3B1F26',
     up: '#FF9DAB',
     down: '#A9E07F',
     scrim: 'rgba(0, 0, 0, 0.65)',
@@ -92,6 +100,8 @@ export const themes: Record<'light' | 'dark' | 'lightHigh' | 'darkHigh', ThemeTo
     primary: '#000000',
     onPrimary: '#FFFFFF',
     pixel: '#8CC84B',
+    pink: '#E8798D',
+    pinkPanel: '#FCE0E5',
     up: '#8A1428',
     down: '#1D4D0B',
     scrim: 'rgba(0, 0, 0, 0.6)',
@@ -109,6 +119,8 @@ export const themes: Record<'light' | 'dark' | 'lightHigh' | 'darkHigh', ThemeTo
     primary: '#D2F592',
     onPrimary: '#000000',
     pixel: '#7DB34A',
+    pink: '#F2A2B1',
+    pinkPanel: '#2E141A',
     up: '#FFC2CB',
     down: '#C6F5A6',
     scrim: 'rgba(0, 0, 0, 0.8)',

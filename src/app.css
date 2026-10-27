@@ -80,13 +80,19 @@
   font-weight: 700;
 }
 
+/* Encadré d'information rose pâle, comme le panneau rose de la charte. */
 .notice {
   margin: 12px 0 0;
   padding: 12px 16px;
-  border: var(--lw) dashed var(--line);
+  border: var(--lw) solid transparent;
   border-radius: 18px;
-  background: var(--surface);
+  background: var(--pink-panel);
+  color: var(--ink);
   font-size: 0.9375rem;
+}
+
+[data-contrast='high'] .notice {
+  border-color: var(--line);
 }
 
 /* ---------- Barre d'onglets flottante (pilule blanche) ---------- */
