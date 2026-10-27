@@ -78,7 +78,8 @@ export function useFormat() {
     if (iso === today) return t('common.today');
     if (iso === addDays(today, -1)) return t('common.yesterday');
     const sameYear = iso.slice(0, 4) === today.slice(0, 4);
-    return date(iso, { weekday: 'long', day: 'numeric', month: 'long', ...(sameYear ? {} : { year: 'numeric' }) });
+    const label = date(iso, { weekday: 'long', day: 'numeric', month: 'long', ...(sameYear ? {} : { year: 'numeric' }) });
+    return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1);
   };
 
   /** Libellé d'une période : « octobre 2026 », « 26 oct. – 1 nov. », « 2026 ». */

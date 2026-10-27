@@ -173,8 +173,15 @@
   color: var(--text-2);
 }
 
-.day-head > span:first-child::first-letter {
-  text-transform: uppercase;
+/* Petit pixel rose devant chaque date. */
+.day-head__label::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  background: var(--pink);
+  vertical-align: 1px;
 }
 
 .swipe {

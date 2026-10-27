@@ -1,17 +1,27 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'motion/react';
-import { IconTrash } from '@tabler/icons-react';
+import { IconTrash, IconX } from '@tabler/icons-react';
 import { analyzePeriod } from '../domain/analytics';
 import { convertMinor } from '../domain/currency';
 import { periodContaining, todayISO } from '../domain/periods';
 import type { Expense } from '../domain/types';
 import { deleteExpense, restoreExpense } from '../db/repo';
-import { Button, Card, CategoryIcon, PixelHeart, SPRING, ScreenHeader, haptic, useToast } from '../ui/components';
+import { Button, Card, CategoryIcon, IconButton, PixelHeart, SPRING, ScreenHeader, haptic, useToast } from '../ui/components';
 import { categoryName, useCategories, useFormat, useSettings, type CategoryIndex } from '../state';
 import { ComparisonLine } from './Comparison';
 
 const PAGE = 120;
+const TIP_KEY = 'pousse.tipHidden';
+
+/** L'astuce reste masquée une fois fermée (mémorisée sur l'appareil). */
+function readTipHidden(): boolean {
+  try {
+    return localStorage.getItem(TIP_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
 
 export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[]; onEdit: (e: Expense) => void; onAdd: () => void }) {
   const { t } = useTranslation();
@@ -20,6 +30,16 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
   const categories = useCategories();
   const toast = useToast();
   const [limit, setLimit] = useState(PAGE);
+  const [tipHidden, setTipHidden] = useState(readTipHidden);
+
+  function hideTip() {
+    setTipHidden(true);
+    try {
+      localStorage.setItem(TIP_KEY, '1');
+    } catch {
+      // Stockage indisponible : l'astuce reviendra au prochain lancement, sans gravité.
+    }
+  }
 
   const today = todayISO();
   const month = periodContaining(today, 'month');
@@ -58,7 +78,10 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
     <div className="screen">
       <ScreenHeader title={t('expenses.title')} subtitle={f.date(today, { month: 'long' })} />
 
-      <Card panel className="card-pad">
+      <Card panel className="card-pad" style={{ position: 'relative' }}>
+        <span style={{ position: 'absolute', top: 18, right: 20 }}>
+          <PixelHeart size={26} />
+        </span>
         <p className="small muted strong" style={{ margin: 0 }}>
           {t('expenses.monthTotal', { month: f.periodLabel(month) })}
         </p>
@@ -66,6 +89,16 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
         <ComparisonLine analysis={analysis} currency={settings.defaultCurrency} />
         {analysis.unconverted > 0 && <p className="notice">{t('expenses.unconverted', { count: analysis.unconverted })}</p>}
       </Card>
+
+      {expenses.length > 0 && !tipHidden && (
+        <div className="notice row" style={{ marginTop: 16, paddingRight: 6 }}>
+          <PixelHeart size={24} />
+          <p className="grow" style={{ margin: 0 }}>{t('expenses.tip')}</p>
+          <IconButton label={t('expenses.dismissTip')} onClick={hideTip}>
+            <IconX size={20} stroke={2.2} />
+          </IconButton>
+        </div>
+      )}
 
       {expenses.length === 0 && (
         <Card className="card-pad" style={{ marginTop: 20, textAlign: 'center' }}>
@@ -81,7 +114,7 @@ export function ExpensesScreen({ expenses, onEdit, onAdd }: { expenses: Expense[
       {days.map((day) => (
         <section key={day.date} aria-label={f.dayLabel(day.date)}>
           <h2 className="day-head">
-            <span>{f.dayLabel(day.date)}</span>
+            <span className="day-head__label">{f.dayLabel(day.date)}</span>
             <span className="num" aria-label={t('expenses.dayTotal', { amount: f.money(dayTotal(day.items), settings.defaultCurrency) })}>
               {f.money(dayTotal(day.items), settings.defaultCurrency)}
             </span>

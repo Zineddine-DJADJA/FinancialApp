@@ -50,7 +50,9 @@
     "unconverted_one": "{{count}} dépense sans taux de change n'est pas comptée. Ajoute le taux dans les réglages.",
     "unconverted_other": "{{count}} dépenses sans taux de change ne sont pas comptées. Ajoute les taux dans les réglages.",
     "swipeHint": "Glisse vers la gauche pour supprimer",
-    "dayTotal": "Total du jour : {{amount}}"
+    "dayTotal": "Total du jour : {{amount}}",
+    "tip": "Astuce : touche une dépense pour la modifier, glisse-la vers la gauche pour la supprimer.",
+    "dismissTip": "Masquer l'astuce"
   },
   "form": {
     "newTitle": "Nouvelle dépense",

@@ -50,7 +50,9 @@
     "unconverted_one": "{{count}} expense without an exchange rate isn't counted. Add the rate in Settings.",
     "unconverted_other": "{{count}} expenses without an exchange rate aren't counted. Add the rates in Settings.",
     "swipeHint": "Swipe left to delete",
-    "dayTotal": "Day total: {{amount}}"
+    "dayTotal": "Day total: {{amount}}",
+    "tip": "Tip: tap an expense to edit it, swipe it left to delete it.",
+    "dismissTip": "Hide tip"
   },
   "form": {
     "newTitle": "New expense",
