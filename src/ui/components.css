@@ -1,0 +1,333 @@
+/* ---------- Cartes : contour encre + rebord coloré ---------- */
+
+.card {
+  background: var(--surface);
+  border: var(--lw) solid var(--line);
+  border-radius: var(--radius-card);
+  /* Le « rebord » : une bande de couleur sous la carte, elle-même cernée d'encre. */
+  box-shadow:
+    0 var(--ledge-h) 0 0 var(--card-ledge, var(--ledge)),
+    0 var(--ledge-h) 0 var(--lw) var(--line);
+  margin-bottom: calc(var(--ledge-h) + 4px);
+}
+
+/* ---------- Boutons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 20px;
+  border: var(--lw) solid var(--line);
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1rem;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 4px 0 0 var(--line);
+  transform: translateY(0);
+  transition: transform 90ms ease-out, box-shadow 90ms ease-out;
+  user-select: none;
+}
+
+/* Retour immédiat dès l'appui : le bouton « s'enfonce » dans son ombre. */
+.btn:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 0 var(--line);
+}
+
+.btn--primary {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+  min-height: 52px;
+  font-size: 1.0625rem;
+}
+
+.btn--accent {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn--danger {
+  color: var(--up);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.btn--ghost:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  flex: none;
+  border: var(--lw) solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 3px 0 0 var(--line);
+  transition: transform 90ms ease-out, box-shadow 90ms ease-out;
+}
+
+.icon-btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 0 var(--line);
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+}
+
+/* ---------- Pastilles (catégories, filtres) ---------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap);
+  padding: 0 14px;
+  border: var(--lw) solid var(--line);
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  background: var(--surface);
+  color: var(--ink);
+  transition: transform 90ms ease-out;
+}
+
+.chip:active {
+  transform: scale(0.96);
+}
+
+.chip[aria-pressed='true'] {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.chip--pastel {
+  color: #1a1f16;
+  border-color: #1a1f16;
+}
+
+/* ---------- Pictogramme de catégorie ---------- */
+
+.cat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  border: var(--lw) solid #1a1f16;
+  color: #1a1f16;
+}
+
+/* ---------- Contrôle segmenté (Semaine / Mois / Année) ---------- */
+
+.segmented {
+  display: flex;
+  padding: 4px;
+  gap: 4px;
+  border: var(--lw) solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.segmented button {
+  flex: 1;
+  min-height: 40px;
+  border: var(--lw) solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--ink);
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: #1a1f16;
+}
+
+/* ---------- Champs ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field > span {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: var(--lw) solid var(--line);
+  border-radius: var(--radius-field);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1.0625rem; /* ≥ 16 px : évite le zoom automatique de Safari */
+}
+
+.input::placeholder {
+  color: var(--text-2);
+  opacity: 0.85;
+}
+
+select.input {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+}
+
+/* ---------- Panneau du bas (sheet) ---------- */
+
+.sheet-scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  z-index: 40;
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 41;
+  max-height: calc(100dvh - var(--safe-top) - 24px);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: var(--lw) solid var(--line);
+  border-bottom: none;
+  border-radius: 28px 28px 0 0;
+  padding-bottom: var(--safe-bottom);
+  margin: 0 auto;
+  max-width: 560px;
+}
+
+.sheet:focus {
+  outline: none;
+}
+
+.sheet__grab {
+  flex: none;
+  padding: 10px 16px 4px;
+  touch-action: none;
+  cursor: grab;
+}
+
+.sheet__handle {
+  width: 40px;
+  height: 5px;
+  margin: 0 auto 10px;
+  border-radius: 3px;
+  background: var(--text-2);
+}
+
+.sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: var(--tap);
+}
+
+.sheet__title {
+  margin: 0;
+  font-size: 1.375rem;
+}
+
+.sheet__body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 16px 20px;
+}
+
+/* ---------- Toast (avec « Annuler ») ---------- */
+
+.toast {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(var(--safe-bottom) + 96px);
+  z-index: 60;
+  margin: 0 auto;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 6px 6px 18px;
+  min-height: 56px;
+  border-radius: 20px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 600;
+}
+
+.toast span {
+  flex: 1;
+}
+
+.toast button {
+  min-height: var(--tap);
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 2px solid var(--on-primary);
+  background: transparent;
+  color: var(--on-primary);
+  font-weight: 700;
+}
+
+/* ---------- Divers ---------- */
+
+.section-label {
+  margin: 20px 4px 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.muted {
+  color: var(--text-2);
+}
+
+.up {
+  color: var(--up);
+}
+
+.down {
+  color: var(--down);
+}

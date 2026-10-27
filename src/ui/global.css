@@ -1,0 +1,99 @@
+/*
+ * Styles globaux. Les couleurs viennent des variables injectées par theme.ts.
+ * Tailles en rem : l'app suit la taille de texte réglée sur le téléphone.
+ */
+
+@import '@fontsource/outfit/latin-600.css';
+@import '@fontsource/outfit/latin-700.css';
+@import '@fontsource/pixelify-sans/latin-600.css';
+
+:root {
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+  --font-num: 'Outfit', var(--font-ui);
+  --font-pixel: 'Pixelify Sans', var(--font-num);
+  --radius-card: 22px;
+  --radius-field: 16px;
+  --tap: 44px;
+  --ledge-h: 5px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1.0625rem/1.4 var(--font-ui);
+  /* Le défilement « élastique » du document entier ferait bouger la barre de navigation. */
+  overscroll-behavior: none;
+}
+
+/* Transition douce clair ↔ sombre (pas de flash brutal de luminosité). */
+body {
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.num {
+  font-family: var(--font-num);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pixel {
+  font-family: var(--font-pixel);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}

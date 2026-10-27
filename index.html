@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover : l'app occupe tout l'écran de l'iPhone, encoches comprises (gérées par les safe areas en CSS). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Pousse</title>
+    <meta name="description" content="Suivi des dépenses du quotidien, hors ligne." />
+    <meta name="theme-color" content="#E3F4B0" />
+
+    <!-- iPhone : installation « Sur l'écran d'accueil » en plein écran -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Pousse" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="apple-touch-icon" href="apple-touch-icon-180x180.png" />
+    <link rel="icon" href="favicon.ico" sizes="48x48" />
+    <link rel="icon" href="logo.svg" type="image/svg+xml" />
+
+    <style>
+      /* Couleur de fond immédiate, avant le chargement du JS. */
+      html { background: #E3F4B0; }
+      @media (prefers-color-scheme: dark) { html { background: #11180E; } }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Pousse a besoin de JavaScript pour fonctionner.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
