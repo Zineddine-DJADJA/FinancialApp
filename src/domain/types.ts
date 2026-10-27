@@ -74,6 +74,19 @@ export function profileName(id: ProfileId): string {
   return PROFILES.find((p) => p.id === id)!.name;
 }
 
+/** L'autre profil : celui dont les données n'arrivent que par import. */
+export function otherProfile(id: ProfileId): ProfileId {
+  return PROFILES.find((p) => p.id !== id)!.id;
+}
+
+/**
+ * Chacun ne modifie que ses propres dépenses : celles de l'autre arrivent par import
+ * et restent en lecture seule. Les dépenses sans profil (antérieures) restent modifiables.
+ */
+export function canEdit(expense: Pick<Expense, 'profile'>, me: ProfileId | undefined): boolean {
+  return !expense.profile || expense.profile === me;
+}
+
 /** Format du fichier d'export / sauvegarde. */
 export interface Backup {
   format: 'pousse-backup';

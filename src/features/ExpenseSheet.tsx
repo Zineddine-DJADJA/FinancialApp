@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { IconBackspace, IconCalendar, IconTrash } from '@tabler/icons-react';
 import { minorDigits, minorToInput, parseToMinor } from '../domain/money';
 import { addDays, todayISO } from '../domain/periods';
-import type { Expense, ProfileId } from '../domain/types';
+import type { Expense } from '../domain/types';
 import { deleteExpense, restoreExpense, saveExpense } from '../db/repo';
 import { Button, Sheet, haptic, useToast } from '../ui/components';
 import { CategoryGlyph } from '../ui/icons';
 import { categoryName, useCategories, useFormat, useSettings } from '../state';
-import { ProfilePicker } from './profiles';
+import { ProfileTag } from './profiles';
 
 /**
  * Saisie rapide : montant au pavé numérique → catégorie → Enregistrer.
  * La date vaut « aujourd'hui » par défaut (ou le jour choisi dans le calendrier),
- * la personne vaut le profil du téléphone. Sert aussi à la modification.
+ * la dépense est au nom du profil du téléphone. Sert aussi à la modification.
  */
 export function ExpenseSheet({
   open,
@@ -37,7 +37,6 @@ export function ExpenseSheet({
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [date, setDate] = useState(todayISO());
   const [note, setNote] = useState('');
-  const [profile, setProfile] = useState<ProfileId | undefined>(undefined);
   const [errors, setErrors] = useState<{ amount?: boolean; category?: boolean }>({});
 
   // Réinitialise le formulaire à chaque ouverture.
@@ -47,7 +46,6 @@ export function ExpenseSheet({
     setCurrency(editing?.currency ?? settings.defaultCurrency);
     setCategoryId(editing?.categoryId ?? null);
     setDate(editing?.date ?? defaultDate ?? todayISO());
-    setProfile(editing ? editing.profile : settings.profile);
     setNote(editing?.note ?? '');
     setErrors({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -94,7 +92,7 @@ export function ExpenseSheet({
       haptic(30);
       return;
     }
-    await saveExpense({ amountMinor: amountMinor!, currency, categoryId: categoryId!, date, note, profile }, editing?.id);
+    await saveExpense({ amountMinor: amountMinor!, currency, categoryId: categoryId!, date, note }, editing?.id);
     haptic(12);
     toast({ message: t(editing ? 'expenses.updated' : 'expenses.added') });
     onClose();
@@ -174,9 +172,12 @@ export function ExpenseSheet({
         </span>
       </div>
 
-      {/* Qui a payé */}
-      <p className="section-label" style={{ marginTop: 6 }}>{t('profile.who')}</p>
-      <ProfilePicker value={profile} onChange={setProfile} label={t('profile.who')} />
+      {/* La dépense est toujours au nom du profil du téléphone. */}
+      {(editing?.profile ?? settings.profile) && (
+        <p className="row small muted" style={{ gap: 8, margin: '10px 4px 0' }}>
+          {t('profile.recordedFor')} <ProfileTag profile={(editing?.profile ?? settings.profile)!} />
+        </p>
+      )}
 
       {/* Note */}
       <label className="field" style={{ marginTop: 6 }}>

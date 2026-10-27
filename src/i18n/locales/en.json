@@ -167,12 +167,19 @@
     "label": "Profile",
     "welcome": "Welcome",
     "question": "Who uses this phone?",
-    "hint": "Each expense is recorded under the person who made it. You can switch profile in Settings.",
-    "who": "Who paid?",
+    "hint": "Each phone belongs to one person, and this choice can't be changed later.",
     "filter": "Person",
     "all": "Both",
     "byPerson": "By person",
-    "unassigned": "Unassigned"
+    "unassigned": "Unassigned",
+    "recordedFor": "Expense recorded for",
+    "readOnly": "{{name}}'s expense: only {{name}} can edit it, from their phone.",
+    "confirmText": "This choice is final. This phone will belong to {{name}}: you'll only enter your own expenses here. {{other}}'s will arrive when you import their export.",
+    "confirm": "I'm {{name}}",
+    "pick": "Pick your profile",
+    "thisPhone": "This phone belongs to",
+    "lockedHint": "The profile is final. To see {{other}}'s expenses, import their export in Data → Import and merge.",
+    "noDataYet": "No expenses from {{name}} on this phone yet. To add them, import their export: Settings → Data → Import and merge."
   },
   "csv": {
     "date": "Date",

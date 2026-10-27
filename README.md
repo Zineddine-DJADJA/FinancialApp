@@ -5,7 +5,7 @@ Pousse est une petite application pour noter les dépenses du quotidien, pensée
 - **100 % hors ligne** : les données restent sur le téléphone, sans compte ni serveur.
 - **Gratuite à distribuer** : sur iPhone, elle s'installe comme une application web (PWA) ; sur Android, en PWA ou en APK.
 - **Fusion à deux** : chacun exporte un fichier, l'autre l'importe. Les doublons sont éliminés grâce à l'identifiant unique de chaque dépense.
-- **Deux profils, Zizou et Zuzu** : chaque dépense est notée au nom de la personne qui l'a payée. L'analyse se filtre par personne.
+- **Deux profils, Zizou et Zuzu** : chaque téléphone appartient définitivement à l'un des deux. On n'y saisit que ses propres dépenses ; celles de l'autre arrivent par import, en lecture seule. L'analyse se filtre par personne.
 - **Calendrier** : vue mensuelle avec le total de chaque jour, et ajout d'une dépense à une date précise.
 - **Export CSV** pour Excel, Numbers ou Google Sheets, en plus de la sauvegarde JSON.
 - **Français et anglais**, multi-devise avec des taux saisis à la main, thème clair et sombre automatique, mode contraste élevé.
@@ -207,8 +207,10 @@ L'export contient **tout**. C'est aussi ta sauvegarde : garde le dernier quelque
 
 ### Profils Zizou et Zuzu
 
-- Au premier lancement, l'app demande qui utilise le téléphone. Le choix se change dans **Réglages → Profil**.
-- À chaque saisie, « Qui a payé ? » est réglé sur le profil du téléphone. On peut choisir l'autre personne, par exemple pour noter une dépense faite par Zuzu depuis le téléphone de Zizou.
+- **Chaque téléphone appartient à une seule personne.** Au premier lancement, l'app demande « Qui utilise ce téléphone ? », puis fait confirmer le choix. Il est **définitif** : impossible de passer ensuite à l'autre profil.
+- **On ne saisit que ses propres dépenses.** Toute nouvelle dépense est au nom du profil du téléphone.
+- **Les dépenses de l'autre n'arrivent que par import.** Sur le téléphone de Zizou, celles de Zuzu apparaissent après avoir importé l'export de Zuzu. Elles sont en **lecture seule**, avec un cadenas : seule Zuzu peut les modifier ou les supprimer, depuis son téléphone, et ses changements arrivent au prochain import.
+- Ces règles sont aussi appliquées dans la base de données, pas seulement dans l'interface, et des tests les vérifient.
 - Dans **Analyse**, le filtre **Tous / Zizou / Zuzu** s'applique à tout l'écran. En mode « Tous », une carte **Par personne** montre qui a dépensé combien sur la période.
 - Il n'y a que ces deux profils, volontairement. Les dépenses saisies avant l'ajout des profils apparaissent comme « Non attribué ».
 

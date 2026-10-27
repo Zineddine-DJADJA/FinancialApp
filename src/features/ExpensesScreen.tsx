@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'motion/react';
-import { IconTrash, IconX } from '@tabler/icons-react';
+import { IconLock, IconTrash, IconX } from '@tabler/icons-react';
 import { analyzePeriod } from '../domain/analytics';
 import { convertMinor } from '../domain/currency';
 import { periodContaining, todayISO } from '../domain/periods';
-import { profileName, type Expense } from '../domain/types';
+import { canEdit, profileName, type Expense } from '../domain/types';
 import { deleteExpense, restoreExpense } from '../db/repo';
 import { Button, Card, CategoryIcon, IconButton, PixelHeart, SPRING, ScreenHeader, Segmented, haptic, useToast } from '../ui/components';
 import { categoryName, useCategories, useFormat, useSettings, type CategoryIndex } from '../state';
@@ -202,7 +202,10 @@ export function ExpenseRow({
   const { t } = useTranslation();
   const f = useFormat();
   const settings = useSettings();
+  const toast = useToast();
   const category = categories.get(expense.categoryId);
+  // Les dépenses de l'autre (arrivées par import) sont en lecture seule.
+  const editable = canEdit(expense, settings.profile);
   const name = categoryName(category, t);
   const foreign = expense.currency !== settings.defaultCurrency;
   const converted = foreign ? convertMinor(expense.amountMinor, expense.currency, settings.defaultCurrency, settings.rates) : null;
@@ -223,10 +226,14 @@ export function ExpenseRow({
       <motion.button
         type="button"
         className="card expense-row"
-        onClick={onOpen}
+        onClick={
+          editable
+            ? onOpen
+            : () => toast({ message: t('profile.readOnly', { name: profileName(expense.profile!) }) })
+        }
         aria-label={[name, f.money(expense.amountMinor, expense.currency), expense.profile && profileName(expense.profile), expense.note].filter(Boolean).join(', ')}
-        aria-description={t('expenses.swipeHint')}
-        drag="x"
+        aria-description={editable ? t('expenses.swipeHint') : t('profile.readOnly', { name: profileName(expense.profile!) })}
+        drag={editable ? 'x' : false}
         dragDirectionLock
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={{ left: 0.7, right: 0 }}
@@ -247,7 +254,10 @@ export function ExpenseRow({
           )}
         </span>
         <span className="expense-row__amount">
-          <span className="num" style={{ display: 'block' }}>{f.money(-expense.amountMinor, expense.currency)}</span>
+          <span className="num" style={{ display: 'block' }}>
+            {!editable && <IconLock size={14} stroke={2.4} aria-hidden="true" style={{ marginRight: 4, verticalAlign: -1 }} />}
+            {f.money(-expense.amountMinor, expense.currency)}
+          </span>
           {foreign && (
             <span className="small muted" style={{ display: 'block' }}>
               {converted === null ? t('expenses.noRate') : t('expenses.approx', { amount: f.money(-converted, settings.defaultCurrency) })}

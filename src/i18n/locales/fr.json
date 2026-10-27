@@ -167,12 +167,19 @@
     "label": "Profil",
     "welcome": "Bienvenue",
     "question": "Qui utilise ce téléphone ?",
-    "hint": "Chaque dépense est notée au nom de la personne qui l'a faite. Tu pourras changer de profil dans les réglages.",
-    "who": "Qui a payé ?",
+    "hint": "Chaque téléphone appartient à une seule personne, et ce choix ne pourra plus être changé.",
     "filter": "Personne",
     "all": "Tous",
     "byPerson": "Par personne",
-    "unassigned": "Non attribué"
+    "unassigned": "Non attribué",
+    "recordedFor": "Dépense au nom de",
+    "readOnly": "Dépense de {{name}} : seule {{name}} peut la modifier, depuis son téléphone.",
+    "confirmText": "Ce choix est définitif. Ce téléphone sera celui de {{name}} : tu y saisiras seulement tes dépenses. Celles de {{other}} arriveront en important son export.",
+    "confirm": "Je suis {{name}}",
+    "pick": "Choisis ton profil",
+    "thisPhone": "Ce téléphone appartient à",
+    "lockedHint": "Le profil est définitif. Pour voir les dépenses de {{other}}, importe son export dans Données → Importer et fusionner.",
+    "noDataYet": "Pas encore de dépenses de {{name}} sur ce téléphone. Pour les ajouter, importe son export : Réglages → Données → Importer et fusionner."
   },
   "csv": {
     "date": "Date",

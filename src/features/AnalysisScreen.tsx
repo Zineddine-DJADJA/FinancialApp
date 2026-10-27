@@ -4,7 +4,7 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { analyzePeriod } from '../domain/analytics';
 import { minorDigits } from '../domain/money';
 import { diffDays, periodContaining, shiftPeriod, todayISO, type PeriodKind } from '../domain/periods';
-import { PROFILES, type Expense, type ProfileId } from '../domain/types';
+import { PROFILES, profileName, type Expense, type ProfileId } from '../domain/types';
 import { Card, CategoryIcon, IconButton, ScreenHeader, Segmented } from '../ui/components';
 import { CompareBars, CumulativeChart, Donut } from '../ui/charts';
 import { categoryName, useCategories, useFormat, useSettings } from '../state';
@@ -84,6 +84,10 @@ export function AnalysisScreen({ expenses }: { expenses: Expense[] }) {
           options={[{ value: 'all', label: t('profile.all') }, ...PROFILES.map((p) => ({ value: p.id, label: p.name }))]}
         />
       </div>
+      {/* Les données de l'autre n'arrivent que par import : on l'explique si elles manquent. */}
+      {who !== 'all' && who !== settings.profile && !expenses.some((e) => e.profile === who) && (
+        <p className="notice">{t('profile.noDataYet', { name: profileName(who) })}</p>
+      )}
 
       <nav className="period-nav" aria-label={t('analysis.kind')}>
         <IconButton label={t('analysis.prev')} onClick={() => setOffset((o) => o - 1)}>

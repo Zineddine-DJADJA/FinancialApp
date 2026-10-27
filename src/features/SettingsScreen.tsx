@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { IconChevronRight, IconDownload, IconFileSpreadsheet, IconPlus, IconUpload, IconX } from '@tabler/icons-react';
 import { COMMON_CURRENCIES, isValidCurrency } from '../domain/money';
 import { BackupError } from '../domain/merge';
-import type { Category, ContrastPref, ThemePref } from '../domain/types';
+import { otherProfile, profileName, type Category, type ContrastPref, type ThemePref } from '../domain/types';
 import { importBackup, updateSettings } from '../db/repo';
 import { Button, Card, CategoryIcon, IconButton, PixelHeart, ScreenHeader, Segmented, useToast } from '../ui/components';
 import { LANGUAGES } from '../i18n';
 import { categoryName, useCategories, useFormat, useSettings } from '../state';
-import { ProfilePicker } from './profiles';
+import { ProfilePicker, ProfileTag } from './profiles';
 import { CategorySheet } from './CategorySheet';
 import { exportBackup, exportCsv } from './backup';
 
@@ -85,8 +85,20 @@ export function SettingsScreen() {
       {/* Profil */}
       <h2 className="section-label">{t('profile.title')}</h2>
       <Card className="card-pad stack">
-        <ProfilePicker value={settings.profile} label={t('profile.label')} onChange={(profile) => void updateSettings({ profile })} />
-        <p className="hint" style={{ margin: 0 }}>{t('profile.hint')}</p>
+        {settings.profile ? (
+          <>
+            {/* Profil définitif : affiché, jamais modifiable. */}
+            <div className="row">
+              <span className="grow strong">{t('profile.thisPhone')}</span>
+              <ProfileTag profile={settings.profile} />
+            </div>
+            <p className="hint" style={{ margin: 0 }}>
+              {t('profile.lockedHint', { other: profileName(otherProfile(settings.profile)) })}
+            </p>
+          </>
+        ) : (
+          <ProfilePicker value={undefined} label={t('profile.label')} onChange={(profile) => void updateSettings({ profile })} />
+        )}
       </Card>
 
       {/* Apparence */}
