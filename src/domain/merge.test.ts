@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { BackupError, mergeRates, mergeRecords, parseBackup, reassignExpenses } from './merge';
-import type { Expense } from './types';
+import { BackupError, mergeCategories, mergeRates, mergeRecords, parseBackup, reassignExpenses, remapCategories } from './merge';
+import type { Category, Expense } from './types';
 
 const base: Expense = {
   id: 'a',
@@ -96,6 +96,51 @@ describe('mergeRates', () => {
   it('ne remplace jamais un taux local', () => {
     expect(mergeRates({ USD: 0.9 }, { USD: 0.8, GBP: 1.2 }, true)).toEqual({ USD: 0.9, GBP: 1.2 });
     expect(mergeRates({ USD: 0.9 }, { GBP: 1.2 }, false)).toEqual({ USD: 0.9 });
+  });
+});
+
+describe('mergeCategories', () => {
+  const cat = (over: Partial<Category>): Category => ({ id: 'x', name: null, icon: 'dots', color: '#D9D2C3', order: 0, updatedAt: 1, ...over });
+  const defaults: Record<string, string> = { food: 'Alimentation', other: 'Autres' };
+  const nameOf = (c: Category) => c.name ?? defaults[c.id] ?? c.id;
+
+  it('fusionne une catégorie de même nom, sans tenir compte des accents ni des majuscules', () => {
+    const r = mergeCategories([cat({ id: 'mine', name: 'Résto' })], [cat({ id: 'hers', name: '  resto ' })], nameOf);
+    expect(r.toPut).toEqual([]);
+    expect(r.idMap.get('hers')).toBe('mine');
+    expect(r.mergedByName).toBe(1);
+  });
+
+  it('reconnaît une catégorie par défaut sous son nom traduit', () => {
+    const r = mergeCategories([cat({ id: 'food' })], [cat({ id: 'hers', name: 'alimentation' })], nameOf);
+    expect(r.idMap.get('hers')).toBe('food');
+  });
+
+  it('ajoute une catégorie vraiment nouvelle', () => {
+    const r = mergeCategories([cat({ id: 'food' })], [cat({ id: 'hers', name: 'Cadeaux' })], nameOf);
+    expect(r.toPut.map((c) => c.id)).toEqual(['hers']);
+    expect(r.idMap.size).toBe(0);
+  });
+
+  it('ne propage pas les suppressions de l\'autre téléphone', () => {
+    const local = [cat({ id: 'fun', name: 'Loisirs', updatedAt: 1 })];
+    const r = mergeCategories(local, [cat({ id: 'fun', name: 'Loisirs', updatedAt: 9, deletedAt: 9 }), cat({ id: 'gone', name: 'X', deletedAt: 2 })], nameOf);
+    expect(r.toPut).toEqual([]);
+  });
+
+  it('ne recrée pas une catégorie supprimée ici', () => {
+    const r = mergeCategories([cat({ id: 'fun', name: 'Loisirs', deletedAt: 5, updatedAt: 5 })], [cat({ id: 'fun', name: 'Sorties', updatedAt: 9 })], nameOf);
+    expect(r.toPut).toEqual([]);
+  });
+
+  it('propage un renommage plus récent en gardant l\'ordre local', () => {
+    const r = mergeCategories([cat({ id: 'fun', name: 'Loisirs', order: 3, updatedAt: 1 })], [cat({ id: 'fun', name: 'Sorties', order: 7, updatedAt: 9 })], nameOf);
+    expect(r.toPut).toEqual([cat({ id: 'fun', name: 'Sorties', order: 3, updatedAt: 9 })]);
+  });
+
+  it('rattache les dépenses importées à la catégorie locale', () => {
+    const remapped = remapCategories([e({ id: 'a', categoryId: 'hers' }), e({ id: 'b', categoryId: 'food' })], new Map([['hers', 'mine']]));
+    expect(remapped.map((x) => x.categoryId)).toEqual(['mine', 'food']);
   });
 });
 

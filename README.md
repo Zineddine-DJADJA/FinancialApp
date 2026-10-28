@@ -199,7 +199,12 @@ Comment fonctionne la fusion ([src/domain/merge.ts](src/domain/merge.ts)) :
 - Chaque dépense a un **UUID**. Une dépense déjà présente n'est jamais dupliquée, même si le même fichier est importé plusieurs fois.
 - Si une dépense a été **modifiée** des deux côtés, c'est la version modifiée **le plus récemment** qui l'emporte.
 - Les **suppressions se propagent** : une dépense supprimée reste marquée « supprimée » dans la base, donc elle ne réapparaît pas au prochain import.
-- Les 7 catégories par défaut ont le même identifiant sur tous les téléphones : pas de doublon de catégories.
+- **Catégories** :
+  - les 7 catégories par défaut ont le même identifiant sur tous les téléphones, donc pas de doublon ;
+  - une catégorie créée par l'autre arrive avec son nom, son icône et sa couleur ;
+  - si vous avez chacun créé une catégorie **du même nom** (« Resto » et « résto », sans tenir compte des majuscules ni des accents), elles sont regroupées : les dépenses de l'autre rejoignent ta catégorie, sans doublon ;
+  - un renommage, une nouvelle icône ou une nouvelle couleur se propagent : c'est la modification la plus récente qui l'emporte ;
+  - **les suppressions restent locales** : une catégorie supprimée sur un téléphone n'est ni supprimée ni recréée sur l'autre. Supprimer une catégorie ne déplace que tes propres dépenses ; celles de l'autre qui l'utilisaient s'affichent dans « Autres » sur ton téléphone.
 - Les taux de change de l'autre téléphone ne sont repris que s'ils manquent chez toi, et seulement si vous avez la même devise par défaut.
 - Les lignes invalides d'un fichier sont ignorées et comptées ; le reste est importé.
 

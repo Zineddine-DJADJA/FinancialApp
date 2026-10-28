@@ -1,6 +1,6 @@
 import { db, defaultSettings, type AppDB } from './db';
 import { rebaseRates } from '../domain/currency';
-import { mergeRates, mergeRecords, parseBackup, reassignExpenses } from '../domain/merge';
+import { mergeCategories, mergeRates, mergeRecords, parseBackup, reassignExpenses, remapCategories } from '../domain/merge';
 import { BACKUP_FORMAT, FALLBACK_CATEGORY_ID, canEdit, type Backup, type Category, type Expense, type Settings } from '../domain/types';
 
 /**
@@ -107,20 +107,35 @@ export async function saveCategory(
   return category.id;
 }
 
-/** Supprime une catégorie après avoir réaffecté ses dépenses à `targetId`. */
+/**
+ * Supprime une catégorie après avoir réaffecté **ses propres** dépenses à `targetId`.
+ * Les dépenses de l'autre ne sont pas touchées : sinon le déplacement repartirait chez
+ * elle au prochain import. Ici, elles s'affichent simplement dans « Autres ».
+ */
 export async function deleteCategory(id: string, targetId: string, database: AppDB = db): Promise<number> {
   if (id === FALLBACK_CATEGORY_ID) throw new Error('fallback category cannot be deleted');
+  const { profile } = await getSettings(database);
   return database.transaction('rw', database.expenses, database.categories, async () => {
     const now = Date.now();
-    const affected = await database.expenses.where('categoryId').equals(id).toArray();
+    const affected = await database.expenses
+      .where('categoryId')
+      .equals(id)
+      .filter((e) => canEdit(e, profile))
+      .toArray();
     await database.expenses.bulkPut(reassignExpenses(affected, id, targetId, now));
     await database.categories.update(id, { deletedAt: now, updatedAt: now });
     return affected.length;
   });
 }
 
+/** Nombre de ses propres dépenses dans une catégorie (celles qu'une suppression déplacera). */
 export async function countExpensesInCategory(id: string, database: AppDB = db): Promise<number> {
-  return database.expenses.where('categoryId').equals(id).filter((e) => !e.deletedAt).count();
+  const { profile } = await getSettings(database);
+  return database.expenses
+    .where('categoryId')
+    .equals(id)
+    .filter((e) => !e.deletedAt && canEdit(e, profile))
+    .count();
 }
 
 /** Export complet, suppressions comprises (nécessaires pour une fusion correcte). */
@@ -146,16 +161,28 @@ export interface ImportReport {
   updated: number;
   unchanged: number;
   rejected: number;
+  /** Catégories importées rattachées à une catégorie locale de même nom. */
+  categoriesMerged: number;
 }
 
-/** Importe un fichier d'export en le fusionnant avec les données locales. */
-export async function importBackup(text: string, database: AppDB = db): Promise<ImportReport> {
+/**
+ * Importe un fichier d'export en le fusionnant avec les données locales.
+ * @param categoryName nom affiché d'une catégorie, pour reconnaître les homonymes
+ *   (les catégories par défaut n'ont pas de nom stocké, il est traduit à l'affichage)
+ */
+export async function importBackup(
+  text: string,
+  database: AppDB = db,
+  categoryName: (c: Category) => string = (c) => c.name ?? c.id,
+): Promise<ImportReport> {
   const parsed = parseBackup(text);
   const fileDefault = (JSON.parse(text) as Partial<Backup>).defaultCurrency;
 
   return database.transaction('rw', database.expenses, database.categories, database.settings, async () => {
-    const expenseMerge = mergeRecords(await database.expenses.toArray(), parsed.expenses);
-    const categoryMerge = mergeRecords(await database.categories.toArray(), parsed.categories);
+    // Catégories d'abord : elles décident à quelle catégorie locale rattacher les dépenses.
+    const categoryMerge = mergeCategories(await database.categories.toArray(), parsed.categories, categoryName);
+    const incoming = remapCategories(parsed.expenses, categoryMerge.idMap);
+    const expenseMerge = mergeRecords(await database.expenses.toArray(), incoming);
     await database.expenses.bulkPut(expenseMerge.toPut);
     await database.categories.bulkPut(categoryMerge.toPut);
 
@@ -168,6 +195,7 @@ export async function importBackup(text: string, database: AppDB = db): Promise<
       updated: expenseMerge.updated,
       unchanged: expenseMerge.unchanged,
       rejected: parsed.rejected,
+      categoriesMerged: categoryMerge.mergedByName,
     };
   });
 }

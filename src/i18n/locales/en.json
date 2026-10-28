@@ -137,7 +137,9 @@
     "version": "Version {{version}}",
     "exportCsv": "Export as CSV",
     "exportCsvHint": "A spreadsheet of expenses for Excel, Numbers or Google Sheets. For a backup or a merge, use “Export” instead.",
-    "exportedCsv": "CSV file ready"
+    "exportedCsv": "CSV file ready",
+    "importCategoriesMerged_one": "{{count}} category with the same name merged into yours.",
+    "importCategoriesMerged_other": "{{count}} categories with the same name merged into yours."
   },
   "category": {
     "newTitle": "New category",

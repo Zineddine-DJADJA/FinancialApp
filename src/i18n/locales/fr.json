@@ -137,7 +137,9 @@
     "version": "Version {{version}}",
     "exportCsv": "Exporter en CSV",
     "exportCsvHint": "Tableau des dépenses pour Excel, Numbers ou Google Sheets. Pour une sauvegarde ou une fusion, utilise plutôt « Exporter ».",
-    "exportedCsv": "Fichier CSV prêt"
+    "exportedCsv": "Fichier CSV prêt",
+    "importCategoriesMerged_one": "{{count}} catégorie de même nom regroupée avec la tienne.",
+    "importCategoriesMerged_other": "{{count}} catégories de même nom regroupées avec les tiennes."
   },
   "category": {
     "newTitle": "Nouvelle catégorie",

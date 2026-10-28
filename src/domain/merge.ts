@@ -6,8 +6,9 @@ import { BACKUP_FORMAT, LEGACY_BACKUP_FORMATS, isProfileId, type Backup, type Ca
  *
  * Règle : les enregistrements sont dédupliqués par `id`. Si les deux côtés
  * possèdent le même id, la version la plus récemment modifiée (`updatedAt`)
- * l'emporte. Les suppressions étant « douces » (`deletedAt`), elles se
- * propagent comme n'importe quelle modification.
+ * l'emporte. Les suppressions de dépenses étant « douces » (`deletedAt`), elles se
+ * propagent comme n'importe quelle modification. Les catégories ont leurs propres
+ * règles (fusion par nom, suppressions locales) : voir `mergeCategories`.
  */
 
 interface Versioned {
@@ -47,6 +48,81 @@ export function mergeRecords<T extends Versioned>(local: T[], incoming: T[]): Me
     }
   }
   return result;
+}
+
+/** Nom comparable : sans accents, sans majuscules, espaces normalisés (« Résto » = « resto »). */
+export function normalizeName(name: string): string {
+  return name
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export interface CategoryMergeResult {
+  /** Catégories à écrire en base. */
+  toPut: Category[];
+  /** Catégorie importée → catégorie locale de même nom, à utiliser pour ses dépenses. */
+  idMap: Map<string, string>;
+  /** Nombre de catégories importées fusionnées avec une catégorie locale de même nom. */
+  mergedByName: number;
+}
+
+/**
+ * Fusion des catégories, avec deux règles propres aux catégories :
+ *
+ * 1. **Même nom = même catégorie.** Une catégorie importée inconnue ici, mais qui porte
+ *    le nom d'une catégorie locale active, n'est pas ajoutée : ses dépenses sont
+ *    rattachées à la catégorie locale. Évite les doublons « Resto » / « resto ».
+ * 2. **Les suppressions restent locales.** Une catégorie supprimée sur l'autre téléphone
+ *    n'est pas supprimée ici ; une catégorie supprimée ici n'est pas recréée par l'import.
+ *
+ * Les renommages, icônes et couleurs d'une même catégorie se propagent toujours
+ * (la version la plus récente l'emporte).
+ *
+ * @param nameOf nom affiché d'une catégorie (gère les noms traduits des catégories par défaut)
+ */
+export function mergeCategories(
+  local: Category[],
+  incoming: Category[],
+  nameOf: (c: Category) => string,
+): CategoryMergeResult {
+  const localById = new Map(local.map((c) => [c.id, c]));
+  const activeByName = new Map<string, string>();
+  for (const c of local) {
+    if (!c.deletedAt) activeByName.set(normalizeName(nameOf(c)), c.id);
+  }
+
+  const result: CategoryMergeResult = { toPut: [], idMap: new Map(), mergedByName: 0 };
+  const latest = mergeRecords([], incoming).toPut; // dédoublonnage du fichier par id
+
+  for (const c of latest) {
+    const existing = localById.get(c.id);
+    if (existing) {
+      // Même catégorie des deux côtés : on ne touche jamais à l'état « supprimée ».
+      if (existing.deletedAt || c.deletedAt || c.updatedAt <= existing.updatedAt) continue;
+      result.toPut.push({ ...c, order: existing.order });
+      continue;
+    }
+    if (c.deletedAt) continue; // supprimée là-bas et inconnue ici : rien à importer
+
+    const sameName = activeByName.get(normalizeName(nameOf(c)));
+    if (sameName) {
+      result.idMap.set(c.id, sameName);
+      result.mergedByName++;
+      continue;
+    }
+    result.toPut.push(c);
+    activeByName.set(normalizeName(nameOf(c)), c.id); // deux catégories homonymes dans le fichier
+  }
+  return result;
+}
+
+/** Rattache les dépenses importées aux catégories locales choisies par `mergeCategories`. */
+export function remapCategories(expenses: Expense[], idMap: Map<string, string>): Expense[] {
+  if (idMap.size === 0) return expenses;
+  return expenses.map((e) => (idMap.has(e.categoryId) ? { ...e, categoryId: idMap.get(e.categoryId)! } : e));
 }
 
 export class BackupError extends Error {

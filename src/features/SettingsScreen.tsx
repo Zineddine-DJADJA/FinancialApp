@@ -29,8 +29,9 @@ export function SettingsScreen() {
   async function onImport(file: File | undefined) {
     if (!file) return;
     try {
-      const report = await importBackup(await file.text());
+      const report = await importBackup(await file.text(), undefined, (c) => categoryName(c, t));
       const parts = [t('settings.importDone', { ...report })];
+      if (report.categoriesMerged) parts.push(t('settings.importCategoriesMerged', { count: report.categoriesMerged }));
       if (report.rejected) parts.push(t('settings.importRejected', { count: report.rejected }));
       toast({ message: parts.join(' ') });
     } catch (e) {

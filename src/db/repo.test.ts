@@ -7,6 +7,7 @@ import {
   deleteCategory,
   deleteExpense,
   importBackup,
+  saveCategory,
   saveExpense,
   updateSettings,
 } from './repo';
@@ -92,6 +93,31 @@ describe('échange entre deux téléphones', () => {
     await expect(updateSettings({ profile: 'zuzu' }, zizou)).rejects.toThrow(ProfileLockedError);
     await updateSettings({ profile: 'zizou', theme: 'dark' }, zizou); // même profil : accepté
     expect((await zizou.settings.get('app'))?.profile).toBe('zizou');
+  });
+
+  it('regroupe les catégories de même nom créées des deux côtés', async () => {
+    await saveCategory({ name: 'Resto', icon: 'pizza', color: '#F7C6CC' }, undefined, zizou);
+    const herResto = await saveCategory({ name: 'résto', icon: 'kitchen', color: '#FFC94A' }, undefined, zuzu);
+    await saveExpense(draft(3000, herResto), undefined, zuzu);
+
+    const report = await importBackup(await exportOf(zuzu), zizou);
+    expect(report.categoriesMerged).toBe(1);
+
+    const restos = (await zizou.categories.toArray()).filter((c) => c.name?.toLowerCase().startsWith('r'));
+    expect(restos).toHaveLength(1);
+    const [imported] = (await zizou.expenses.toArray()).filter((e) => e.profile === 'zuzu');
+    expect(imported.categoryId).toBe(restos[0].id);
+  });
+
+  it('garde chez soi une catégorie supprimée par l\'autre', async () => {
+    await saveExpense(draft(1000, 'leisure'), undefined, zizou);
+    await importBackup(await exportOf(zizou), zuzu);
+    await deleteCategory('leisure', 'other', zuzu);
+    await importBackup(await exportOf(zuzu), zizou);
+
+    expect((await zizou.categories.get('leisure'))?.deletedAt).toBeUndefined();
+    const [mine] = await zizou.expenses.toArray();
+    expect(mine.categoryId).toBe('leisure');
   });
 
   it('réaffecte les dépenses d\'une catégorie supprimée', async () => {
