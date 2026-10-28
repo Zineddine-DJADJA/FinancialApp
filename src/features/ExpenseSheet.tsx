@@ -9,6 +9,7 @@ import { Button, Sheet, haptic, useToast } from '../ui/components';
 import { CategoryGlyph } from '../ui/icons';
 import { categoryName, useCategories, useFormat, useSettings } from '../state';
 import { ProfileTag } from './profiles';
+import { DatePicker } from './DatePicker';
 
 /**
  * Saisie rapide : montant au pavé numérique → catégorie → Enregistrer.
@@ -37,6 +38,7 @@ export function ExpenseSheet({
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [date, setDate] = useState(todayISO());
   const [note, setNote] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [errors, setErrors] = useState<{ amount?: boolean; category?: boolean }>({});
 
   // Réinitialise le formulaire à chaque ouverture.
@@ -47,6 +49,7 @@ export function ExpenseSheet({
     setCategoryId(editing?.categoryId ?? null);
     setDate(editing?.date ?? defaultDate ?? todayISO());
     setNote(editing?.note ?? '');
+    setPickerOpen(false);
     setErrors({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editing]);
@@ -153,24 +156,34 @@ export function ExpenseSheet({
 
       {/* Date */}
       <div className="chip-scroll" role="group" aria-label={t('form.date')}>
-        <button type="button" className="chip" aria-pressed={date === today} onClick={() => setDate(today)}>
+        <button type="button" className="chip" aria-pressed={date === today} onClick={() => { setDate(today); setPickerOpen(false); }}>
           {t('common.today')}
         </button>
-        <button type="button" className="chip" aria-pressed={date === yesterday} onClick={() => setDate(yesterday)}>
+        <button type="button" className="chip" aria-pressed={date === yesterday} onClick={() => { setDate(yesterday); setPickerOpen(false); }}>
           {t('common.yesterday')}
         </button>
-        <span className="chip date-input" style={isOtherDate ? { outline: '3px solid var(--ink)', outlineOffset: 2 } : undefined}>
+        <button
+          type="button"
+          className="chip"
+          aria-pressed={isOtherDate}
+          aria-expanded={pickerOpen}
+          onClick={() => setPickerOpen((o) => !o)}
+        >
           <IconCalendar size={20} aria-hidden="true" />
           {isOtherDate ? f.date(date, { day: 'numeric', month: 'short', year: 'numeric' }) : t('form.otherDate')}
-          <input
-            type="date"
-            aria-label={t('form.otherDate')}
-            value={date}
-            max="2100-12-31"
-            onChange={(e) => e.target.value && setDate(e.target.value)}
-          />
-        </span>
+        </button>
       </div>
+      {pickerOpen && (
+        <DatePicker
+          value={date}
+          max={today}
+          onChange={(d) => {
+            haptic(5);
+            setDate(d);
+            setPickerOpen(false);
+          }}
+        />
+      )}
 
       {/* La dépense est toujours au nom du profil du téléphone. */}
       {(editing?.profile ?? settings.profile) && (

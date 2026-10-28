@@ -307,17 +307,6 @@
   font-size: 0.9375rem;
 }
 
-.date-input {
-  position: relative;
-}
-
-.date-input input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  width: 100%;
-  cursor: pointer;
-}
 
 /* ---------- Analyse ---------- */
 
@@ -568,4 +557,20 @@ button.settings-row:active {
   font-size: 0.75rem;
   line-height: 1;
   white-space: nowrap;
+}
+
+/* Calendrier de choix de date dans la saisie : plus compact que la vue Calendrier. */
+.date-picker {
+  margin: 4px 0 8px;
+}
+
+.date-picker .calendar__day {
+  min-height: 44px;
+  justify-content: center;
+  padding: 0;
+}
+
+.calendar__day:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
